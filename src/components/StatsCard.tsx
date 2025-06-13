@@ -13,12 +13,12 @@ interface StatsCardProps {
 
 const StatsCard = ({ title, value, icon: Icon, trend, trendUp }: StatsCardProps) => {
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 border-brand-gray-200">
+    <Card className="hover:shadow-lg transition-shadow duration-200 border-brand-gray-200 bg-brand-gray-800">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-brand-gray-600 mb-1">{title}</p>
-            <p className="text-2xl font-bold text-brand-gray-900">{value}</p>
+            <p className="text-sm font-medium text-brand-gray-300 mb-1">{title}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
             {trend && (
               <Badge 
                 variant="secondary" 
