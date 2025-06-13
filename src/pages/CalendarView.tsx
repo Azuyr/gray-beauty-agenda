@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -189,7 +188,7 @@ const CalendarView = () => {
                     <span className="text-sm font-medium text-brand-gray-900">
                       {format(appointment.date, "dd/MM", { locale: ptBR })}
                     </span>
-                    <Badge className={getStatusColor(appointment.status)} size="sm">
+                    <Badge className={getStatusColor(appointment.status)}>
                       {appointment.status}
                     </Badge>
                   </div>
