@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,7 +59,7 @@ const CalendarView = () => {
       case 'confirmado':
         return 'bg-green-100 text-green-800 hover:bg-green-100';
       case 'pendente':
-        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100';
+        return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
       case 'cancelado':
         return 'bg-red-100 text-red-800 hover:bg-red-100';
       default:
