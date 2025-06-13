@@ -4,6 +4,7 @@ import { Calendar, Users, Clock, TrendingUp, Scissors, Heart, Sparkles } from "l
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import StatsCard from "@/components/StatsCard";
 import AppointmentCard from "@/components/AppointmentCard";
@@ -74,22 +75,22 @@ const Index = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-blue-50 to-brand-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-brand-gray-50 to-brand-gray-100">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col items-center justify-center min-h-screen text-center">
             <div className="mb-8 animate-fade-in">
               <div className="flex items-center justify-center mb-6">
-                <div className="p-4 bg-brand-blue-600 rounded-full mr-4">
+                <div className="p-4 bg-brand-gray-700 rounded-full mr-4">
                   <Sparkles className="h-8 w-8 text-white" />
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-brand-blue-600 to-brand-blue-800 bg-clip-text text-transparent">
+                <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-brand-gray-700 to-brand-gray-900 bg-clip-text text-transparent">
                   BeautyBook
                 </h1>
               </div>
-              <p className="text-xl text-brand-gray-600 mb-2">
+              <p className="text-xl text-brand-gray-700 mb-2">
                 Sistema de Agendamento Profissional
               </p>
-              <p className="text-brand-gray-500 mb-8">
+              <p className="text-brand-gray-600 mb-8">
                 Para Salões de Beleza • Barbearias • Clínicas de Estética
               </p>
             </div>
@@ -106,7 +107,7 @@ const Index = () => {
               <CardContent className="space-y-4">
                 <Button 
                   onClick={handleGoogleLogin}
-                  className="w-full bg-brand-blue-600 hover:bg-brand-blue-700 text-white py-3 text-lg transition-all duration-200 transform hover:scale-105"
+                  className="w-full bg-brand-gray-700 hover:bg-brand-gray-800 text-white py-3 text-lg transition-all duration-200 transform hover:scale-105"
                   size="lg"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -119,7 +120,7 @@ const Index = () => {
                 </Button>
                 
                 <div className="text-center">
-                  <div className="flex items-center justify-center space-x-4 text-sm text-brand-gray-500">
+                  <div className="flex items-center justify-center space-x-4 text-sm text-brand-gray-600">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
                       Agendamentos ilimitados
@@ -134,18 +135,18 @@ const Index = () => {
             </Card>
 
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-100">
-                <Scissors className="h-8 w-8 text-brand-blue-600 mx-auto mb-3" />
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
+                <Scissors className="h-8 w-8 text-brand-gray-700 mx-auto mb-3" />
                 <h3 className="font-semibold text-brand-gray-800 mb-2">Salões de Beleza</h3>
                 <p className="text-sm text-brand-gray-600">Gerencie cortes, colorações e tratamentos</p>
               </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-100">
-                <Scissors className="h-8 w-8 text-brand-blue-600 mx-auto mb-3 rotate-45" />
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
+                <Scissors className="h-8 w-8 text-brand-gray-700 mx-auto mb-3 rotate-45" />
                 <h3 className="font-semibold text-brand-gray-800 mb-2">Barbearias</h3>
                 <p className="text-sm text-brand-gray-600">Organize cortes masculinos e barbearia</p>
               </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-100">
-                <Heart className="h-8 w-8 text-brand-blue-600 mx-auto mb-3" />
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
+                <Heart className="h-8 w-8 text-brand-gray-700 mx-auto mb-3" />
                 <h3 className="font-semibold text-brand-gray-800 mb-2">Clínicas de Estética</h3>
                 <p className="text-sm text-brand-gray-600">Controle procedimentos e consultas</p>
               </div>
@@ -210,9 +211,11 @@ const Index = () => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Próximos Agendamentos</span>
-                <Button variant="outline" size="sm">
-                  Ver todos
-                </Button>
+                <Link to="/calendar">
+                  <Button variant="outline" size="sm">
+                    Ver calendário
+                  </Button>
+                </Link>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -230,18 +233,24 @@ const Index = () => {
               <CardTitle>Ações Rápidas</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full bg-brand-blue-600 hover:bg-brand-blue-700">
-                <Calendar className="h-4 w-4 mr-2" />
-                Novo Agendamento
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Users className="h-4 w-4 mr-2" />
-                Adicionar Cliente
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Clock className="h-4 w-4 mr-2" />
-                Ver Agenda
-              </Button>
+              <Link to="/appointments">
+                <Button className="w-full bg-brand-gray-700 hover:bg-brand-gray-800">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Novo Agendamento
+                </Button>
+              </Link>
+              <Link to="/add-client">
+                <Button variant="outline" className="w-full border-brand-blue-300 text-brand-blue-700 hover:bg-brand-blue-50">
+                  <Users className="h-4 w-4 mr-2" />
+                  Adicionar Cliente
+                </Button>
+              </Link>
+              <Link to="/calendar">
+                <Button variant="outline" className="w-full border-brand-blue-300 text-brand-blue-700 hover:bg-brand-blue-50">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Ver Agenda
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

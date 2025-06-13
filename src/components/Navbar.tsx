@@ -31,7 +31,7 @@ const Navbar = () => {
           </Button>
           
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-brand-blue-600 rounded-lg">
+            <div className="p-2 bg-brand-gray-700 rounded-lg">
               <div className="h-6 w-6 bg-white rounded-sm"></div>
             </div>
             <span className="font-bold text-xl text-brand-gray-900">BeautyBook</span>
@@ -44,7 +44,7 @@ const Navbar = () => {
             <Input
               type="text"
               placeholder="Buscar clientes, agendamentos..."
-              className="pl-10 bg-brand-gray-50 border-brand-gray-200 focus:border-brand-blue-500"
+              className="pl-10 bg-brand-gray-50 border-brand-gray-200 focus:border-brand-gray-600"
             />
           </div>
         </div>
