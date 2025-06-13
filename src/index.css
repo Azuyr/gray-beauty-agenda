@@ -123,3 +123,16 @@
 .gradient-card {
   background: linear-gradient(135deg, rgba(51, 65, 85, 0.1) 0%, rgba(30, 41, 59, 0.05) 100%);
 }
+
+/* Remove any yellow colors and replace with gray */
+.bg-yellow-100 {
+  @apply bg-brand-gray-100;
+}
+
+.text-yellow-800 {
+  @apply text-brand-gray-800;
+}
+
+.hover\:bg-yellow-100:hover {
+  @apply hover:bg-brand-gray-100;
+}
