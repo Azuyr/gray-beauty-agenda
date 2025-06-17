@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { ArrowLeft, Save, Calendar as CalendarIcon, Clock, User, Mail, MessageCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
-import { format, parse } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Popover,
@@ -33,22 +32,43 @@ const Appointments = () => {
   // Preencher formulário se estiver editando
   useEffect(() => {
     if (editingAppointment) {
+      console.log("Editing appointment:", editingAppointment);
+      
       setFormData({
-        clientName: editingAppointment.clientName,
-        service: editingAppointment.service,
-        time: editingAppointment.time,
+        clientName: editingAppointment.clientName || "",
+        service: editingAppointment.service || "",
+        time: editingAppointment.time || "",
         notes: ""
       });
       
-      // Converter a data do formato dd/MM/yyyy para Date
-      try {
-        const parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
-        setDate(parsedDate);
-      } catch (error) {
-        console.error("Erro ao converter data:", error);
+      // Converter a data do formato dd/MM/yyyy para Date com validação
+      if (editingAppointment.date) {
+        try {
+          console.log("Parsing date:", editingAppointment.date);
+          const parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
+          
+          if (isValid(parsedDate)) {
+            setDate(parsedDate);
+            console.log("Date parsed successfully:", parsedDate);
+          } else {
+            console.error("Parsed date is invalid:", parsedDate);
+            toast({
+              title: "Erro",
+              description: "Data do agendamento inválida.",
+              variant: "destructive"
+            });
+          }
+        } catch (error) {
+          console.error("Erro ao converter data:", error);
+          toast({
+            title: "Erro",
+            description: "Erro ao processar a data do agendamento.",
+            variant: "destructive"
+          });
+        }
       }
     }
-  }, [editingAppointment]);
+  }, [editingAppointment, toast]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
