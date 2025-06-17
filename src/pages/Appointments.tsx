@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Appointments = () => {
   const [date, setDate] = useState<Date>();
@@ -27,6 +27,7 @@ const Appointments = () => {
   });
   const { toast } = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
   const editingAppointment = location.state?.editingAppointment;
 
   // Preencher formulário se estiver editando
@@ -86,8 +87,14 @@ const Appointments = () => {
       title: `Agendamento ${action} com sucesso!`,
       description: `Agendamento para ${formData.clientName} em ${format(date, "dd/MM/yyyy", { locale: ptBR })} às ${formData.time}.`,
     });
-    setFormData({ clientName: "", service: "", time: "", notes: "" });
-    setDate(undefined);
+    
+    // Se for uma edição, navegar de volta; se for novo, limpar o formulário
+    if (editingAppointment) {
+      navigate(-1); // Volta para a página anterior
+    } else {
+      setFormData({ clientName: "", service: "", time: "", notes: "" });
+      setDate(undefined);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +123,7 @@ const Appointments = () => {
         <div className="mb-6">
           <Button 
             variant="outline" 
-            onClick={() => window.history.back()}
+            onClick={() => navigate(-1)}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

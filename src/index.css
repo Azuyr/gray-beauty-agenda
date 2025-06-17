@@ -124,80 +124,109 @@
   background: linear-gradient(135deg, rgba(51, 65, 85, 0.1) 0%, rgba(30, 41, 59, 0.05) 100%);
 }
 
-/* Remove any yellow colors and replace with gray */
+/* Replace any remaining yellow colors with gray equivalents */
+.bg-amber-50,
 .bg-yellow-50 {
   @apply bg-brand-gray-50;
 }
 
+.bg-amber-100,
 .bg-yellow-100 {
   @apply bg-brand-gray-100;
 }
 
+.bg-amber-200,
 .bg-yellow-200 {
   @apply bg-brand-gray-200;
 }
 
+.bg-amber-300,
 .bg-yellow-300 {
   @apply bg-brand-gray-300;
 }
 
+.bg-amber-400,
+.bg-yellow-400 {
+  @apply bg-brand-gray-400;
+}
+
+.bg-amber-500,
+.bg-yellow-500 {
+  @apply bg-brand-gray-500;
+}
+
+.text-amber-600,
 .text-yellow-600 {
   @apply text-brand-gray-600;
 }
 
+.text-amber-700,
 .text-yellow-700 {
   @apply text-brand-gray-700;
 }
 
+.text-amber-800,
 .text-yellow-800 {
   @apply text-brand-gray-800;
 }
 
+.text-amber-900,
 .text-yellow-900 {
   @apply text-brand-gray-900;
 }
 
+.border-amber-200,
 .border-yellow-200 {
   @apply border-brand-gray-200;
 }
 
+.border-amber-300,
 .border-yellow-300 {
   @apply border-brand-gray-300;
 }
 
+.hover\:bg-amber-50:hover,
 .hover\:bg-yellow-50:hover {
   @apply hover:bg-brand-gray-50;
 }
 
+.hover\:bg-amber-100:hover,
 .hover\:bg-yellow-100:hover {
   @apply hover:bg-brand-gray-100;
 }
 
+.hover\:bg-amber-200:hover,
 .hover\:bg-yellow-200:hover {
   @apply hover:bg-brand-gray-200;
 }
 
+.hover\:text-amber-600:hover,
 .hover\:text-yellow-600:hover {
   @apply hover:text-brand-gray-600;
 }
 
+.hover\:text-amber-700:hover,
 .hover\:text-yellow-700:hover {
   @apply hover:text-brand-gray-700;
 }
 
+.hover\:border-amber-300:hover,
 .hover\:border-yellow-300:hover {
   @apply hover:border-brand-gray-300;
 }
 
 /* Focus states */
+.focus\:bg-amber-100:focus,
 .focus\:bg-yellow-100:focus {
   @apply focus:bg-brand-gray-100;
 }
 
+.focus\:border-amber-300:focus,
 .focus\:border-yellow-300:focus {
   @apply focus:border-brand-gray-300;
 }
 
+.focus\:text-amber-700:focus,
 .focus\:text-yellow-700:focus {
   @apply focus:text-brand-gray-700;
 }
