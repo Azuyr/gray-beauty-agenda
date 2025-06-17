@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { ArrowLeft, Save, Calendar as CalendarIcon, Clock, User, Mail, MessageCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Popover,
@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 const Appointments = () => {
   const [date, setDate] = useState<Date>();
@@ -26,6 +27,28 @@ const Appointments = () => {
     notes: ""
   });
   const { toast } = useToast();
+  const location = useLocation();
+  const editingAppointment = location.state?.editingAppointment;
+
+  // Preencher formulário se estiver editando
+  useEffect(() => {
+    if (editingAppointment) {
+      setFormData({
+        clientName: editingAppointment.clientName,
+        service: editingAppointment.service,
+        time: editingAppointment.time,
+        notes: ""
+      });
+      
+      // Converter a data do formato dd/MM/yyyy para Date
+      try {
+        const parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
+        setDate(parsedDate);
+      } catch (error) {
+        console.error("Erro ao converter data:", error);
+      }
+    }
+  }, [editingAppointment]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +61,9 @@ const Appointments = () => {
       return;
     }
     
+    const action = editingAppointment ? "atualizado" : "criado";
     toast({
-      title: "Agendamento criado com sucesso!",
+      title: `Agendamento ${action} com sucesso!`,
       description: `Agendamento para ${formData.clientName} em ${format(date, "dd/MM/yyyy", { locale: ptBR })} às ${formData.time}.`,
     });
     setFormData({ clientName: "", service: "", time: "", notes: "" });
@@ -80,10 +104,10 @@ const Appointments = () => {
           </Button>
           
           <h1 className="text-3xl font-bold text-brand-gray-900 mb-2">
-            Novo Agendamento
+            {editingAppointment ? "Editar Agendamento" : "Novo Agendamento"}
           </h1>
           <p className="text-brand-gray-600">
-            Crie um novo agendamento para seu cliente
+            {editingAppointment ? "Edite os dados do agendamento" : "Crie um novo agendamento para seu cliente"}
           </p>
         </div>
 
@@ -180,7 +204,7 @@ const Appointments = () => {
                 <div className="flex flex-col space-y-2">
                   <Button type="submit" className="bg-brand-gray-700 hover:bg-brand-gray-800">
                     <Save className="h-4 w-4 mr-2" />
-                    Salvar Agendamento
+                    {editingAppointment ? "Atualizar Agendamento" : "Salvar Agendamento"}
                   </Button>
                   
                   {formData.clientName && date && formData.time && (

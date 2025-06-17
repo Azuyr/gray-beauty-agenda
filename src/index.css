@@ -125,14 +125,79 @@
 }
 
 /* Remove any yellow colors and replace with gray */
+.bg-yellow-50 {
+  @apply bg-brand-gray-50;
+}
+
 .bg-yellow-100 {
   @apply bg-brand-gray-100;
+}
+
+.bg-yellow-200 {
+  @apply bg-brand-gray-200;
+}
+
+.bg-yellow-300 {
+  @apply bg-brand-gray-300;
+}
+
+.text-yellow-600 {
+  @apply text-brand-gray-600;
+}
+
+.text-yellow-700 {
+  @apply text-brand-gray-700;
 }
 
 .text-yellow-800 {
   @apply text-brand-gray-800;
 }
 
+.text-yellow-900 {
+  @apply text-brand-gray-900;
+}
+
+.border-yellow-200 {
+  @apply border-brand-gray-200;
+}
+
+.border-yellow-300 {
+  @apply border-brand-gray-300;
+}
+
+.hover\:bg-yellow-50:hover {
+  @apply hover:bg-brand-gray-50;
+}
+
 .hover\:bg-yellow-100:hover {
   @apply hover:bg-brand-gray-100;
+}
+
+.hover\:bg-yellow-200:hover {
+  @apply hover:bg-brand-gray-200;
+}
+
+.hover\:text-yellow-600:hover {
+  @apply hover:text-brand-gray-600;
+}
+
+.hover\:text-yellow-700:hover {
+  @apply hover:text-brand-gray-700;
+}
+
+.hover\:border-yellow-300:hover {
+  @apply hover:border-brand-gray-300;
+}
+
+/* Focus states */
+.focus\:bg-yellow-100:focus {
+  @apply focus:bg-brand-gray-100;
+}
+
+.focus\:border-yellow-300:focus {
+  @apply focus:border-brand-gray-300;
+}
+
+.focus\:text-yellow-700:focus {
+  @apply focus:text-brand-gray-700;
 }

@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Appointment {
   id: number;
@@ -28,6 +29,7 @@ interface AppointmentCardProps {
 
 const AppointmentCard = ({ appointment, onEdit }: AppointmentCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -44,6 +46,13 @@ const AppointmentCard = ({ appointment, onEdit }: AppointmentCardProps) => {
 
   const handleEdit = () => {
     setIsOpen(false);
+    // Navegar para a página de agendamentos com os dados do agendamento
+    navigate('/appointments', { 
+      state: { 
+        editingAppointment: appointment 
+      }
+    });
+    
     if (onEdit) {
       onEdit(appointment);
     }
