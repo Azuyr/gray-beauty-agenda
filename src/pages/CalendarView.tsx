@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +7,11 @@ import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, User } from "lucide-r
 import Navbar from "@/components/Navbar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
 
 const CalendarView = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const navigate = useNavigate();
 
   // Mock data para agendamentos
   const appointments = [
@@ -73,15 +74,15 @@ const CalendarView = () => {
   const datesWithAppointments = appointments.map(apt => apt.date);
 
   return (
-    <div className="min-h-screen bg-brand-gray-50">
+    <div className="min-h-screen bg-slate-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-6">
         <div className="mb-6">
           <Button 
             variant="outline" 
-            onClick={() => window.history.back()}
-            className="mb-4"
+            onClick={() => navigate(-1)}
+            className="mb-4 bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600 hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
@@ -89,14 +90,14 @@ const CalendarView = () => {
           
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-brand-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 Calendário de Agendamentos
               </h1>
-              <p className="text-brand-gray-600">
+              <p className="text-slate-400">
                 Visualize e gerencie seus agendamentos
               </p>
             </div>
-            <Button className="bg-brand-gray-700 hover:bg-brand-gray-800">
+            <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
               Novo Agendamento
             </Button>
@@ -122,8 +123,8 @@ const CalendarView = () => {
                 }}
                 modifiersStyles={{
                   hasAppointment: {
-                    backgroundColor: '#dbeafe',
-                    color: '#1d4ed8',
+                    backgroundColor: '#1e40af',
+                    color: '#ffffff',
                     fontWeight: 'bold'
                   }
                 }}
@@ -140,7 +141,7 @@ const CalendarView = () => {
             </CardHeader>
             <CardContent>
               {appointmentsForSelectedDate.length === 0 ? (
-                <p className="text-brand-gray-500 text-center py-8">
+                <p className="text-slate-400 text-center py-8">
                   Nenhum agendamento para esta data
                 </p>
               ) : (
@@ -148,21 +149,21 @@ const CalendarView = () => {
                   {appointmentsForSelectedDate.map((appointment) => (
                     <div 
                       key={appointment.id}
-                      className="p-4 border border-brand-gray-200 rounded-lg bg-white"
+                      className="p-4 border border-slate-600 rounded-lg bg-slate-700"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-brand-gray-900">
+                        <span className="font-medium text-white">
                           {appointment.time}
                         </span>
                         <Badge className={getStatusColor(appointment.status)}>
                           {appointment.status}
                         </Badge>
                       </div>
-                      <div className="flex items-center text-sm text-brand-gray-600 mb-1">
+                      <div className="flex items-center text-sm text-slate-300 mb-1">
                         <User className="h-3 w-3 mr-1" />
                         {appointment.clientName}
                       </div>
-                      <p className="text-sm text-brand-gray-500">
+                      <p className="text-sm text-slate-400">
                         {appointment.service}
                       </p>
                     </div>
@@ -183,20 +184,20 @@ const CalendarView = () => {
               {appointments.slice(0, 4).map((appointment) => (
                 <div 
                   key={appointment.id}
-                  className="p-4 border border-brand-gray-200 rounded-lg bg-white hover:shadow-md transition-shadow"
+                  className="p-4 border border-slate-600 rounded-lg bg-slate-700 hover:shadow-md transition-shadow"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium text-brand-gray-900">
+                    <span className="text-sm font-medium text-white">
                       {format(appointment.date, "dd/MM", { locale: ptBR })}
                     </span>
                     <Badge className={getStatusColor(appointment.status)}>
                       {appointment.status}
                     </Badge>
                   </div>
-                  <p className="text-sm text-brand-gray-600 mb-1">
+                  <p className="text-sm text-slate-300 mb-1">
                     {appointment.time} - {appointment.clientName}
                   </p>
-                  <p className="text-xs text-brand-gray-500">
+                  <p className="text-xs text-slate-400">
                     {appointment.service}
                   </p>
                 </div>
