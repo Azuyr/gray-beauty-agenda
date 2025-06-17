@@ -63,18 +63,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Updated theme: Dark gray as primary, blue as secondary
+				// Dark blue theme: Deep navy and royal blue colors
 				'brand-gray': {
-					50: '#f8fafc',
-					100: '#f1f5f9',
-					200: '#e2e8f0',
-					300: '#cbd5e1',
+					50: '#1e293b',
+					100: '#334155',
+					200: '#475569',
+					300: '#64748b',
 					400: '#94a3b8',
-					500: '#64748b',
-					600: '#475569',
-					700: '#334155',
-					800: '#1e293b',
-					900: '#0f172a',
+					500: '#cbd5e1',
+					600: '#e2e8f0',
+					700: '#f1f5f9',
+					800: '#f8fafc',
+					900: '#ffffff',
 				},
 				'brand-blue': {
 					50: '#eff6ff',

@@ -3,51 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom gray primary and blue secondary theme for beauty salon/clinic booking app */
+/* Dark blue theme for beauty salon/clinic booking app */
 
 @layer base {
   :root {
-    --background: 248 250 252;
-    --foreground: 15 23 42;
-
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
-
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
-
-    --primary: 51 65 85;
-    --primary-foreground: 248 250 252;
-
-    --secondary: 59 130 246;
-    --secondary-foreground: 255 255 255;
-
-    --muted: 241 245 249;
-    --muted-foreground: 100 116 139;
-
-    --accent: 239 246 255;
-    --accent-foreground: 29 78 216;
-
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 51 65 85;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 71 85 105;
-    --sidebar-primary: 51 65 85;
-    --sidebar-primary-foreground: 248 250 252;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 71 85 105;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 51 65 85;
-  }
-
-  .dark {
     --background: 15 23 42;
     --foreground: 241 245 249;
 
@@ -57,11 +16,11 @@
     --popover: 30 41 59;
     --popover-foreground: 241 245 249;
 
-    --primary: 148 163 184;
+    --primary: 59 130 246;
     --primary-foreground: 15 23 42;
 
-    --secondary: 147 197 253;
-    --secondary-foreground: 15 23 42;
+    --secondary: 30 58 138;
+    --secondary-foreground: 255 255 255;
 
     --muted: 51 65 85;
     --muted-foreground: 148 163 184;
@@ -74,16 +33,57 @@
 
     --border: 51 65 85;
     --input: 51 65 85;
-    --ring: 148 163 184;
+    --ring: 59 130 246;
+
+    --radius: 0.75rem;
 
     --sidebar-background: 30 41 59;
     --sidebar-foreground: 148 163 184;
-    --sidebar-primary: 148 163 184;
-    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-primary: 59 130 246;
+    --sidebar-primary-foreground: 15 23 42;
     --sidebar-accent: 51 65 85;
     --sidebar-accent-foreground: 148 163 184;
     --sidebar-border: 51 65 85;
-    --sidebar-ring: 147 197 253;
+    --sidebar-ring: 59 130 246;
+  }
+
+  .dark {
+    --background: 15 23 42;
+    --foreground: 241 245 249;
+
+    --card: 30 41 59;
+    --card-foreground: 241 245 249;
+
+    --popover: 30 41 59;
+    --popover-foreground: 241 245 249;
+
+    --primary: 59 130 246;
+    --primary-foreground: 15 23 42;
+
+    --secondary: 30 58 138;
+    --secondary-foreground: 255 255 255;
+
+    --muted: 51 65 85;
+    --muted-foreground: 148 163 184;
+
+    --accent: 30 58 138;
+    --accent-foreground: 219 234 254;
+
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
+
+    --border: 51 65 85;
+    --input: 51 65 85;
+    --ring: 59 130 246;
+
+    --sidebar-background: 30 41 59;
+    --sidebar-foreground: 148 163 184;
+    --sidebar-primary: 59 130 246;
+    --sidebar-primary-foreground: 15 23 42;
+    --sidebar-accent: 51 65 85;
+    --sidebar-accent-foreground: 148 163 184;
+    --sidebar-border: 51 65 85;
+    --sidebar-ring: 59 130 246;
   }
 }
 
@@ -104,129 +104,129 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-brand-gray-100;
+  @apply bg-slate-700;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-brand-gray-300 rounded-full;
+  @apply bg-blue-600 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-brand-gray-400;
+  @apply bg-blue-500;
 }
 
 /* Custom gradient backgrounds */
 .gradient-bg {
-  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
 }
 
 .gradient-card {
-  background: linear-gradient(135deg, rgba(51, 65, 85, 0.1) 0%, rgba(30, 41, 59, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 58, 138, 0.05) 100%);
 }
 
-/* Replace any remaining yellow colors with gray equivalents */
+/* Replace any remaining yellow colors with dark blue equivalents */
 .bg-amber-50,
 .bg-yellow-50 {
-  @apply bg-brand-gray-50;
+  @apply bg-slate-800;
 }
 
 .bg-amber-100,
 .bg-yellow-100 {
-  @apply bg-brand-gray-100;
+  @apply bg-slate-700;
 }
 
 .bg-amber-200,
 .bg-yellow-200 {
-  @apply bg-brand-gray-200;
+  @apply bg-slate-600;
 }
 
 .bg-amber-300,
 .bg-yellow-300 {
-  @apply bg-brand-gray-300;
+  @apply bg-slate-500;
 }
 
 .bg-amber-400,
 .bg-yellow-400 {
-  @apply bg-brand-gray-400;
+  @apply bg-blue-600;
 }
 
 .bg-amber-500,
 .bg-yellow-500 {
-  @apply bg-brand-gray-500;
+  @apply bg-blue-600;
 }
 
 .text-amber-600,
 .text-yellow-600 {
-  @apply text-brand-gray-600;
+  @apply text-blue-400;
 }
 
 .text-amber-700,
 .text-yellow-700 {
-  @apply text-brand-gray-700;
+  @apply text-blue-300;
 }
 
 .text-amber-800,
 .text-yellow-800 {
-  @apply text-brand-gray-800;
+  @apply text-blue-200;
 }
 
 .text-amber-900,
 .text-yellow-900 {
-  @apply text-brand-gray-900;
+  @apply text-blue-100;
 }
 
 .border-amber-200,
 .border-yellow-200 {
-  @apply border-brand-gray-200;
+  @apply border-slate-600;
 }
 
 .border-amber-300,
 .border-yellow-300 {
-  @apply border-brand-gray-300;
+  @apply border-slate-500;
 }
 
 .hover\:bg-amber-50:hover,
 .hover\:bg-yellow-50:hover {
-  @apply hover:bg-brand-gray-50;
+  @apply hover:bg-slate-700;
 }
 
 .hover\:bg-amber-100:hover,
 .hover\:bg-yellow-100:hover {
-  @apply hover:bg-brand-gray-100;
+  @apply hover:bg-slate-600;
 }
 
 .hover\:bg-amber-200:hover,
 .hover\:bg-yellow-200:hover {
-  @apply hover:bg-brand-gray-200;
+  @apply hover:bg-slate-500;
 }
 
 .hover\:text-amber-600:hover,
 .hover\:text-yellow-600:hover {
-  @apply hover:text-brand-gray-600;
+  @apply hover:text-blue-300;
 }
 
 .hover\:text-amber-700:hover,
 .hover\:text-yellow-700:hover {
-  @apply hover:text-brand-gray-700;
+  @apply hover:text-blue-200;
 }
 
 .hover\:border-amber-300:hover,
 .hover\:border-yellow-300:hover {
-  @apply hover:border-brand-gray-300;
+  @apply hover:border-slate-400;
 }
 
 /* Focus states */
 .focus\:bg-amber-100:focus,
 .focus\:bg-yellow-100:focus {
-  @apply focus:bg-brand-gray-100;
+  @apply focus:bg-slate-600;
 }
 
 .focus\:border-amber-300:focus,
 .focus\:border-yellow-300:focus {
-  @apply focus:border-brand-gray-300;
+  @apply focus:border-blue-500;
 }
 
 .focus\:text-amber-700:focus,
 .focus\:text-yellow-700:focus {
-  @apply focus:text-brand-gray-700;
+  @apply focus:text-blue-200;
 }

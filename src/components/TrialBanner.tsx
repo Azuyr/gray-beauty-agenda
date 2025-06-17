@@ -13,7 +13,7 @@ const TrialBanner = ({ daysLeft }: TrialBannerProps) => {
   if (!isVisible) return null;
 
   return (
-    <div className="bg-gradient-to-r from-brand-gray-700 to-brand-gray-800 text-white px-4 py-3">
+    <div className="bg-gradient-to-r from-blue-800 to-blue-900 text-white px-4 py-3">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <AlertCircle className="h-5 w-5" />
@@ -26,7 +26,7 @@ const TrialBanner = ({ daysLeft }: TrialBannerProps) => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="bg-white text-brand-gray-700 border-white hover:bg-brand-gray-50"
+            className="bg-white text-blue-800 border-white hover:bg-blue-50"
           >
             Assinar agora
           </Button>

@@ -116,7 +116,7 @@ const Appointments = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-gray-50">
+    <div className="min-h-screen bg-slate-900">
       <Navbar />
       
       <div className="container mx-auto px-4 py-6">
@@ -124,24 +124,24 @@ const Appointments = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate(-1)}
-            className="mb-4"
+            className="mb-4 bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
           
-          <h1 className="text-3xl font-bold text-brand-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             {editingAppointment ? "Editar Agendamento" : "Novo Agendamento"}
           </h1>
-          <p className="text-brand-gray-600">
+          <p className="text-slate-400">
             {editingAppointment ? "Edite os dados do agendamento" : "Crie um novo agendamento para seu cliente"}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
+          <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <CalendarIcon className="h-5 w-5 mr-2" />
                 Dados do Agendamento
               </CardTitle>
@@ -149,19 +149,19 @@ const Appointments = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="clientName">Nome do Cliente</Label>
+                  <Label htmlFor="clientName" className="text-slate-300">Nome do Cliente</Label>
                   <Input
                     id="clientName"
                     name="clientName"
                     value={formData.clientName}
                     onChange={handleInputChange}
                     required
-                    className="mt-1"
+                    className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="service">Serviço</Label>
+                  <Label htmlFor="service" className="text-slate-300">Serviço</Label>
                   <Input
                     id="service"
                     name="service"
@@ -169,33 +169,33 @@ const Appointments = () => {
                     onChange={handleInputChange}
                     placeholder="Ex: Corte + Escova"
                     required
-                    className="mt-1"
+                    className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Data</Label>
+                    <Label className="text-slate-300">Data</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal mt-1",
-                            !date && "text-muted-foreground"
+                            "w-full justify-start text-left font-normal mt-1 bg-slate-700 border-slate-600 text-white hover:bg-slate-600",
+                            !date && "text-slate-400"
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar data"}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto p-0 bg-slate-800 border-slate-700" align="start">
                         <Calendar
                           mode="single"
                           selected={date}
                           onSelect={setDate}
                           initialFocus
-                          className="pointer-events-auto"
+                          className="pointer-events-auto text-white"
                           disabled={(date) => date < new Date()}
                         />
                       </PopoverContent>
@@ -203,7 +203,7 @@ const Appointments = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="time">Horário</Label>
+                    <Label htmlFor="time" className="text-slate-300">Horário</Label>
                     <Input
                       id="time"
                       name="time"
@@ -211,25 +211,25 @@ const Appointments = () => {
                       value={formData.time}
                       onChange={handleInputChange}
                       required
-                      className="mt-1"
+                      className="mt-1 bg-slate-700 border-slate-600 text-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="notes">Observações</Label>
+                  <Label htmlFor="notes" className="text-slate-300">Observações</Label>
                   <Input
                     id="notes"
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
                     placeholder="Observações especiais..."
-                    className="mt-1"
+                    className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
                   />
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                  <Button type="submit" className="bg-brand-gray-700 hover:bg-brand-gray-800">
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
                     <Save className="h-4 w-4 mr-2" />
                     {editingAppointment ? "Atualizar Agendamento" : "Salvar Agendamento"}
                   </Button>
@@ -240,7 +240,7 @@ const Appointments = () => {
                         type="button" 
                         variant="outline" 
                         onClick={sendEmail}
-                        className="flex-1"
+                        className="flex-1 bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
                       >
                         <Mail className="h-4 w-4 mr-2" />
                         Enviar por E-mail
@@ -249,7 +249,7 @@ const Appointments = () => {
                         type="button" 
                         variant="outline" 
                         onClick={sendWhatsApp}
-                        className="flex-1"
+                        className="flex-1 bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
                       >
                         <MessageCircle className="h-4 w-4 mr-2" />
                         Enviar WhatsApp
@@ -261,9 +261,9 @@ const Appointments = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <Clock className="h-5 w-5 mr-2" />
                 Horários Disponíveis
               </CardTitle>
@@ -276,7 +276,11 @@ const Appointments = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => setFormData(prev => ({ ...prev, time }))}
-                    className={formData.time === time ? "bg-brand-blue-100 border-brand-blue-500" : ""}
+                    className={`${
+                      formData.time === time 
+                        ? "bg-blue-600 border-blue-500 text-white" 
+                        : "bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                    }`}
                   >
                     {time}
                   </Button>

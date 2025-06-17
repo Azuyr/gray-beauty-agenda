@@ -23,35 +23,35 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b border-brand-gray-200 px-4 py-3 shadow-sm">
+    <nav className="bg-slate-800 border-b border-slate-700 px-4 py-3 shadow-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="lg:hidden">
+          <Button variant="ghost" size="icon" className="lg:hidden text-slate-300 hover:text-white hover:bg-slate-700">
             <Menu className="h-5 w-5" />
           </Button>
           
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-brand-gray-700 rounded-lg">
+            <div className="p-2 bg-blue-600 rounded-lg">
               <div className="h-6 w-6 bg-white rounded-sm"></div>
             </div>
-            <span className="font-bold text-xl text-brand-gray-900">BeautyBook</span>
+            <span className="font-bold text-xl text-white">BeautyBook</span>
           </div>
         </div>
 
         <div className="hidden md:flex items-center space-x-4 flex-1 max-w-md mx-8">
           <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-brand-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               type="text"
               placeholder="Buscar clientes, agendamentos..."
-              className="pl-10 bg-brand-gray-50 border-brand-gray-200 focus:border-brand-gray-600"
+              className="pl-10 bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:bg-slate-600"
             />
           </div>
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5 text-brand-gray-600" />
+          <Button variant="ghost" size="icon" className="relative text-slate-300 hover:text-white hover:bg-slate-700">
+            <Bell className="h-5 w-5" />
             {notifications > 0 && (
               <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
                 {notifications}
@@ -61,26 +61,26 @@ const Navbar = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-brand-blue-100 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-brand-blue-600" />
+              <Button variant="ghost" className="flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-white" />
                 </div>
-                <span className="hidden md:block text-brand-gray-700">Usuário</span>
+                <span className="hidden md:block">Usuário</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white border border-brand-gray-200">
-              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700 text-slate-100">
+              <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-slate-700" />
+              <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-700">
                 <User className="mr-2 h-4 w-4" />
                 Perfil
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-700">
                 <Settings className="mr-2 h-4 w-4" />
                 Configurações
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+              <DropdownMenuSeparator className="bg-slate-700" />
+              <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 hover:bg-slate-700">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </DropdownMenuItem>

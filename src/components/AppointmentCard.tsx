@@ -34,13 +34,13 @@ const AppointmentCard = ({ appointment, onEdit }: AppointmentCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmado':
-        return 'bg-green-100 text-green-800 hover:bg-green-100';
+        return 'bg-green-900 text-green-300 hover:bg-green-900';
       case 'pendente':
-        return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
+        return 'bg-slate-700 text-slate-300 hover:bg-slate-700';
       case 'cancelado':
-        return 'bg-red-100 text-red-800 hover:bg-red-100';
+        return 'bg-red-900 text-red-300 hover:bg-red-900';
       default:
-        return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
+        return 'bg-slate-700 text-slate-300 hover:bg-slate-700';
     }
   };
 
@@ -60,21 +60,21 @@ const AppointmentCard = ({ appointment, onEdit }: AppointmentCardProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between p-4 border border-brand-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white">
+      <div className="flex items-center justify-between p-4 border border-slate-700 rounded-lg hover:shadow-md transition-shadow bg-slate-800">
         <div className="flex items-center space-x-4">
-          <div className="h-12 w-12 bg-brand-blue-100 rounded-full flex items-center justify-center">
-            <User className="h-6 w-6 text-brand-blue-600" />
+          <div className="h-12 w-12 bg-blue-900 rounded-full flex items-center justify-center">
+            <User className="h-6 w-6 text-blue-400" />
           </div>
           
           <div>
-            <h4 className="font-semibold text-brand-gray-900">{appointment.clientName}</h4>
-            <p className="text-sm text-brand-gray-600">{appointment.service}</p>
+            <h4 className="font-semibold text-white">{appointment.clientName}</h4>
+            <p className="text-sm text-slate-400">{appointment.service}</p>
             <div className="flex items-center space-x-3 mt-1">
-              <div className="flex items-center text-xs text-brand-gray-500">
+              <div className="flex items-center text-xs text-slate-500">
                 <Clock className="h-3 w-3 mr-1" />
                 {appointment.time} • {appointment.date}
               </div>
-              <div className="flex items-center text-xs text-brand-gray-500">
+              <div className="flex items-center text-xs text-slate-500">
                 <DollarSign className="h-3 w-3 mr-1" />
                 {appointment.price}
               </div>
@@ -88,46 +88,46 @@ const AppointmentCard = ({ appointment, onEdit }: AppointmentCardProps) => {
           </Badge>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="text-brand-blue-600 border-brand-blue-200 hover:bg-brand-blue-50">
+              <Button variant="outline" size="sm" className="text-blue-400 border-blue-700 hover:bg-blue-900 bg-slate-700">
                 Ver detalhes
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-700">
               <DialogHeader>
-                <DialogTitle className="flex items-center">
+                <DialogTitle className="flex items-center text-white">
                   <Calendar className="h-5 w-5 mr-2" />
                   Detalhes do Agendamento
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Cliente:</span>
-                  <span className="text-brand-gray-600">{appointment.clientName}</span>
+                  <span className="font-medium text-white">Cliente:</span>
+                  <span className="text-slate-400">{appointment.clientName}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Serviço:</span>
-                  <span className="text-brand-gray-600">{appointment.service}</span>
+                  <span className="font-medium text-white">Serviço:</span>
+                  <span className="text-slate-400">{appointment.service}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Data:</span>
-                  <span className="text-brand-gray-600">{appointment.date}</span>
+                  <span className="font-medium text-white">Data:</span>
+                  <span className="text-slate-400">{appointment.date}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Horário:</span>
-                  <span className="text-brand-gray-600">{appointment.time}</span>
+                  <span className="font-medium text-white">Horário:</span>
+                  <span className="text-slate-400">{appointment.time}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Preço:</span>
-                  <span className="text-brand-gray-600">{appointment.price}</span>
+                  <span className="font-medium text-white">Preço:</span>
+                  <span className="text-slate-400">{appointment.price}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-brand-gray-900">Status:</span>
+                  <span className="font-medium text-white">Status:</span>
                   <Badge className={getStatusColor(appointment.status)}>
                     {appointment.status}
                   </Badge>
                 </div>
-                <div className="pt-4 border-t">
-                  <Button onClick={handleEdit} className="w-full bg-brand-gray-700 hover:bg-brand-gray-800">
+                <div className="pt-4 border-t border-slate-700">
+                  <Button onClick={handleEdit} className="w-full bg-blue-600 hover:bg-blue-700">
                     <Edit className="h-4 w-4 mr-2" />
                     Editar Agendamento
                   </Button>
