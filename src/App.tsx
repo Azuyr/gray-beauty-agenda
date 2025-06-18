@@ -10,6 +10,8 @@ import Appointments from "./pages/Appointments";
 import CalendarView from "./pages/CalendarView";
 import UserManagement from "./pages/UserManagement";
 import Settings from "./pages/Settings";
+import Services from "./pages/Services";
+import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/calendar" element={<CalendarView />} />
           <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

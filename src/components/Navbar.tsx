@@ -1,5 +1,4 @@
-
-import { Bell, Menu, Search, User, LogOut, Settings, Users } from "lucide-react";
+import { Bell, Menu, Search, User, LogOut, Settings, Users, Scissors, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -80,6 +79,20 @@ const Navbar = () => {
               >
                 <Users className="mr-2 h-4 w-4" />
                 Gerenciar Usuários
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                onClick={() => navigate('/services')}
+              >
+                <Scissors className="mr-2 h-4 w-4" />
+                Gerenciar Serviços
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                onClick={() => navigate('/products')}
+              >
+                <Package className="mr-2 h-4 w-4" />
+                Gerenciar Produtos
               </DropdownMenuItem>
               <DropdownMenuItem 
                 className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
