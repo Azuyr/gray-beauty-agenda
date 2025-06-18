@@ -21,6 +21,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('trialStart');
+    navigate('/');
     window.location.reload();
   };
 
@@ -74,21 +75,24 @@ const Navbar = () => {
               <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-700" />
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
                 onClick={() => navigate('/user-management')}
               >
                 <Users className="mr-2 h-4 w-4" />
                 Gerenciar Usuários
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
                 onClick={() => navigate('/settings')}
               >
                 <Settings className="mr-2 h-4 w-4" />
                 Configurações
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-slate-700" />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 hover:bg-slate-700">
+              <DropdownMenuItem 
+                onClick={handleLogout} 
+                className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </DropdownMenuItem>
