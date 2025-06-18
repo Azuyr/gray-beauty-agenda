@@ -1,9 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Calendar, Users, Clock, TrendingUp, Scissors, Heart, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import StatsCard from "@/components/StatsCard";
@@ -14,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [trialDaysLeft, setTrialDaysLeft] = useState(5);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { toast } = useToast();
 
   // Mock authentication state
@@ -30,6 +33,27 @@ const Index = () => {
       }
     }
   }, []);
+
+  const handleLogin = () => {
+    if (!email || !password) {
+      toast({
+        title: "Erro",
+        description: "Por favor, preencha todos os campos.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Mock login validation
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('trialStart', Date.now().toString());
+    setIsAuthenticated(true);
+    setTrialDaysLeft(5);
+    toast({
+      title: "Login realizado com sucesso!",
+      description: "Bem-vindo! Você tem 5 dias de teste grátis.",
+    });
+  };
 
   const handleGoogleLogin = () => {
     // Mock Google login
@@ -95,19 +119,61 @@ const Index = () => {
               </p>
             </div>
 
-            <Card className="w-full max-w-md animate-fade-in shadow-xl border-0 gradient-card">
+            <Card className="w-full max-w-md animate-fade-in shadow-xl">
               <CardHeader className="text-center pb-4">
-                <CardTitle className="text-2xl text-brand-gray-800">
-                  Comece seu teste grátis
+                <CardTitle className="text-2xl">
+                  Faça seu login
                 </CardTitle>
-                <p className="text-brand-gray-600">
-                  5 dias gratuitos • Sem compromisso
+                <p className="text-slate-400">
+                  Entre em sua conta ou comece seu teste grátis
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-white">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Sua senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleLogin}
+                  className="w-full py-3 text-lg transition-all duration-200 transform hover:scale-105"
+                  size="lg"
+                >
+                  Entrar
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-600"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-slate-800 text-slate-400">ou</span>
+                  </div>
+                </div>
+                
                 <Button 
                   onClick={handleGoogleLogin}
-                  className="w-full bg-brand-gray-700 hover:bg-brand-gray-800 text-white py-3 text-lg transition-all duration-200 transform hover:scale-105"
+                  variant="outline"
+                  className="w-full py-3 text-lg transition-all duration-200 transform hover:scale-105"
                   size="lg"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -120,7 +186,7 @@ const Index = () => {
                 </Button>
                 
                 <div className="text-center">
-                  <div className="flex items-center justify-center space-x-4 text-sm text-brand-gray-600">
+                  <div className="flex items-center justify-center space-x-4 text-sm text-slate-400">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
                       Agendamentos ilimitados
@@ -135,20 +201,20 @@ const Index = () => {
             </Card>
 
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
-                <Scissors className="h-8 w-8 text-brand-gray-700 mx-auto mb-3" />
-                <h3 className="font-semibold text-brand-gray-800 mb-2">Salões de Beleza</h3>
-                <p className="text-sm text-brand-gray-600">Gerencie cortes, colorações e tratamentos</p>
+              <div className="text-center p-6 bg-slate-800 rounded-lg shadow-sm border border-slate-700">
+                <Scissors className="h-8 w-8 text-blue-400 mx-auto mb-3" />
+                <h3 className="font-semibold text-white mb-2">Salões de Beleza</h3>
+                <p className="text-sm text-slate-400">Gerencie cortes, colorações e tratamentos</p>
               </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
-                <Scissors className="h-8 w-8 text-brand-gray-700 mx-auto mb-3 rotate-45" />
-                <h3 className="font-semibold text-brand-gray-800 mb-2">Barbearias</h3>
-                <p className="text-sm text-brand-gray-600">Organize cortes masculinos e barbearia</p>
+              <div className="text-center p-6 bg-slate-800 rounded-lg shadow-sm border border-slate-700">
+                <Scissors className="h-8 w-8 text-blue-400 mx-auto mb-3 rotate-45" />
+                <h3 className="font-semibold text-white mb-2">Barbearias</h3>
+                <p className="text-sm text-slate-400">Organize cortes masculinos e barbearia</p>
               </div>
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-brand-gray-200">
-                <Heart className="h-8 w-8 text-brand-gray-700 mx-auto mb-3" />
-                <h3 className="font-semibold text-brand-gray-800 mb-2">Clínicas de Estética</h3>
-                <p className="text-sm text-brand-gray-600">Controle procedimentos e consultas</p>
+              <div className="text-center p-6 bg-slate-800 rounded-lg shadow-sm border border-slate-700">
+                <Heart className="h-8 w-8 text-blue-400 mx-auto mb-3" />
+                <h3 className="font-semibold text-white mb-2">Clínicas de Estética</h3>
+                <p className="text-sm text-slate-400">Controle procedimentos e consultas</p>
               </div>
             </div>
           </div>
@@ -234,19 +300,19 @@ const Index = () => {
             </CardHeader>
             <CardContent className="space-y-3">
               <Link to="/appointments">
-                <Button className="w-full bg-brand-gray-700 hover:bg-brand-gray-800">
+                <Button className="w-full">
                   <Calendar className="h-4 w-4 mr-2" />
                   Novo Agendamento
                 </Button>
               </Link>
               <Link to="/add-client">
-                <Button variant="outline" className="w-full border-brand-blue-300 text-brand-blue-700 hover:bg-brand-blue-50">
+                <Button variant="outline" className="w-full">
                   <Users className="h-4 w-4 mr-2" />
                   Adicionar Cliente
                 </Button>
               </Link>
               <Link to="/calendar">
-                <Button variant="outline" className="w-full border-brand-blue-300 text-brand-blue-700 hover:bg-brand-blue-50">
+                <Button variant="outline" className="w-full">
                   <Clock className="h-4 w-4 mr-2" />
                   Ver Agenda
                 </Button>
