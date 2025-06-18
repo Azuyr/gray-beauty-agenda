@@ -44,13 +44,34 @@ const Settings = () => {
   };
 
   const handleInputChange = (section: string, field: string, value: string | boolean) => {
-    setSettings(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section as keyof typeof prev],
-        [field]: value
+    setSettings(prev => {
+      if (section === 'workingHours') {
+        return {
+          ...prev,
+          workingHours: {
+            ...prev.workingHours,
+            [field]: value
+          }
+        };
+      } else if (section === 'notifications') {
+        return {
+          ...prev,
+          notifications: {
+            ...prev.notifications,
+            [field]: value
+          }
+        };
+      } else if (section === 'booking') {
+        return {
+          ...prev,
+          booking: {
+            ...prev.booking,
+            [field]: value
+          }
+        };
       }
-    }));
+      return prev;
+    });
   };
 
   const handleDirectChange = (field: string, value: string) => {
