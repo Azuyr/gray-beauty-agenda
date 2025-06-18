@@ -24,6 +24,7 @@ const Products = () => {
     { id: 2, name: "Condicionador Hidratante", description: "Condicionador nutritivo", brand: "Pantene", price: "18.50", stock: "30" },
   ]);
   
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -63,6 +64,7 @@ const Products = () => {
     }
     
     setFormData({ name: "", description: "", brand: "", price: "", stock: "" });
+    setShowForm(false);
   };
 
   const handleEdit = (product: Product) => {
@@ -74,6 +76,7 @@ const Products = () => {
       stock: product.stock
     });
     setEditingId(product.id);
+    setShowForm(true);
   };
 
   const handleDelete = (id: number) => {
@@ -91,6 +94,12 @@ const Products = () => {
     }));
   };
 
+  const handleNewProduct = () => {
+    setFormData({ name: "", description: "", brand: "", price: "", stock: "" });
+    setEditingId(null);
+    setShowForm(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-900">
       <Navbar />
@@ -106,16 +115,33 @@ const Products = () => {
             Voltar
           </Button>
           
-          <h1 className="text-3xl font-bold text-white mb-2">Gerenciar Produtos</h1>
-          <p className="text-slate-400">Cadastre e gerencie os produtos disponíveis</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">Gerenciar Produtos</h1>
+              <p className="text-slate-400">Cadastre e gerencie os produtos disponíveis</p>
+            </div>
+            <Button onClick={handleNewProduct} className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Cadastrar Novo
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-slate-800 border-slate-700">
+        {showForm ? (
+          <Card className="bg-slate-800 border-slate-700 mb-6">
             <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <Plus className="h-5 w-5 mr-2" />
-                {editingId ? "Editar Produto" : "Novo Produto"}
+              <CardTitle className="flex items-center justify-between text-white">
+                <span className="flex items-center">
+                  <Package className="h-5 w-5 mr-2" />
+                  {editingId ? "Editar Produto" : "Novo Produto"}
+                </span>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setShowForm(false)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -188,36 +214,35 @@ const Products = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                  <Save className="h-4 w-4 mr-2" />
-                  {editingId ? "Atualizar Produto" : "Salvar Produto"}
-                </Button>
-                
-                {editingId && (
+                <div className="flex space-x-4">
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    {editingId ? "Atualizar Produto" : "Salvar Produto"}
+                  </Button>
+                  
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => {
-                      setEditingId(null);
-                      setFormData({ name: "", description: "", brand: "", price: "", stock: "" });
-                    }}
-                    className="w-full bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                    onClick={() => setShowForm(false)}
+                    className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
                   >
                     Cancelar
                   </Button>
-                )}
+                </div>
               </form>
             </CardContent>
           </Card>
+        ) : null}
 
-          <Card className="bg-slate-800 border-slate-700">
-            <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <Package className="h-5 w-5 mr-2" />
-                Produtos Cadastrados
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="bg-slate-800 border-slate-700">
+          <CardHeader>
+            <CardTitle className="flex items-center text-white">
+              <Package className="h-5 w-5 mr-2" />
+              Produtos Cadastrados ({products.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {products.length > 0 ? (
               <div className="space-y-4">
                 {products.map((product) => (
                   <div key={product.id} className="p-4 bg-slate-700 rounded-lg">
@@ -230,7 +255,8 @@ const Products = () => {
                           onClick={() => handleEdit(product)}
                           className="bg-slate-600 border-slate-500 text-slate-300 hover:bg-slate-500"
                         >
-                          <Edit className="h-3 w-3" />
+                          <Edit className="h-3 w-3 mr-1" />
+                          Editar
                         </Button>
                         <Button
                           variant="outline"
@@ -238,7 +264,8 @@ const Products = () => {
                           onClick={() => handleDelete(product.id)}
                           className="bg-red-900 border-red-700 text-red-300 hover:bg-red-800"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Excluir
                         </Button>
                       </div>
                     </div>
@@ -251,9 +278,18 @@ const Products = () => {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            ) : (
+              <div className="text-center py-8">
+                <Package className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">Nenhum produto cadastrado ainda.</p>
+                <Button onClick={handleNewProduct} className="mt-4 bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Cadastrar Primeiro Produto
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

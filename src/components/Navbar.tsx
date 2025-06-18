@@ -70,32 +70,35 @@ const Navbar = () => {
                 <span className="hidden md:block">Usuário</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700 text-slate-100">
+            <DropdownMenuContent 
+              align="end" 
+              className="w-56 bg-slate-800 border-slate-700 text-slate-100"
+            >
               <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-700" />
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-white"
                 onClick={() => navigate('/user-management')}
               >
                 <Users className="mr-2 h-4 w-4" />
                 Gerenciar Usuários
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-white"
                 onClick={() => navigate('/services')}
               >
                 <Scissors className="mr-2 h-4 w-4" />
                 Gerenciar Serviços
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-white"
                 onClick={() => navigate('/products')}
               >
                 <Package className="mr-2 h-4 w-4" />
                 Gerenciar Produtos
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-white"
                 onClick={() => navigate('/settings')}
               >
                 <Settings className="mr-2 h-4 w-4" />
@@ -104,7 +107,7 @@ const Navbar = () => {
               <DropdownMenuSeparator className="bg-slate-700" />
               <DropdownMenuItem 
                 onClick={handleLogout} 
-                className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors"
+                className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-red-300"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair

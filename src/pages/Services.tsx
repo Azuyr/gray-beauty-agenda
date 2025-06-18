@@ -23,6 +23,7 @@ const Services = () => {
     { id: 2, name: "Corte + Barba", description: "Corte completo com barba", duration: "45", price: "35.00" },
   ]);
   
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -61,6 +62,7 @@ const Services = () => {
     }
     
     setFormData({ name: "", description: "", duration: "", price: "" });
+    setShowForm(false);
   };
 
   const handleEdit = (service: Service) => {
@@ -71,6 +73,7 @@ const Services = () => {
       price: service.price
     });
     setEditingId(service.id);
+    setShowForm(true);
   };
 
   const handleDelete = (id: number) => {
@@ -88,6 +91,12 @@ const Services = () => {
     }));
   };
 
+  const handleNewService = () => {
+    setFormData({ name: "", description: "", duration: "", price: "" });
+    setEditingId(null);
+    setShowForm(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-900">
       <Navbar />
@@ -103,16 +112,33 @@ const Services = () => {
             Voltar
           </Button>
           
-          <h1 className="text-3xl font-bold text-white mb-2">Gerenciar Serviços</h1>
-          <p className="text-slate-400">Cadastre e gerencie os serviços oferecidos</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">Gerenciar Serviços</h1>
+              <p className="text-slate-400">Cadastre e gerencie os serviços oferecidos</p>
+            </div>
+            <Button onClick={handleNewService} className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Cadastrar Novo
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-slate-800 border-slate-700">
+        {showForm ? (
+          <Card className="bg-slate-800 border-slate-700 mb-6">
             <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <Plus className="h-5 w-5 mr-2" />
-                {editingId ? "Editar Serviço" : "Novo Serviço"}
+              <CardTitle className="flex items-center justify-between text-white">
+                <span className="flex items-center">
+                  <Scissors className="h-5 w-5 mr-2" />
+                  {editingId ? "Editar Serviço" : "Novo Serviço"}
+                </span>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setShowForm(false)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  ✕
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -173,36 +199,35 @@ const Services = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                  <Save className="h-4 w-4 mr-2" />
-                  {editingId ? "Atualizar Serviço" : "Salvar Serviço"}
-                </Button>
-                
-                {editingId && (
+                <div className="flex space-x-4">
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    {editingId ? "Atualizar Serviço" : "Salvar Serviço"}
+                  </Button>
+                  
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => {
-                      setEditingId(null);
-                      setFormData({ name: "", description: "", duration: "", price: "" });
-                    }}
-                    className="w-full bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                    onClick={() => setShowForm(false)}
+                    className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
                   >
                     Cancelar
                   </Button>
-                )}
+                </div>
               </form>
             </CardContent>
           </Card>
+        ) : null}
 
-          <Card className="bg-slate-800 border-slate-700">
-            <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <Scissors className="h-5 w-5 mr-2" />
-                Serviços Cadastrados
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="bg-slate-800 border-slate-700">
+          <CardHeader>
+            <CardTitle className="flex items-center text-white">
+              <Scissors className="h-5 w-5 mr-2" />
+              Serviços Cadastrados ({services.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {services.length > 0 ? (
               <div className="space-y-4">
                 {services.map((service) => (
                   <div key={service.id} className="p-4 bg-slate-700 rounded-lg">
@@ -215,7 +240,8 @@ const Services = () => {
                           onClick={() => handleEdit(service)}
                           className="bg-slate-600 border-slate-500 text-slate-300 hover:bg-slate-500"
                         >
-                          <Edit className="h-3 w-3" />
+                          <Edit className="h-3 w-3 mr-1" />
+                          Editar
                         </Button>
                         <Button
                           variant="outline"
@@ -223,7 +249,8 @@ const Services = () => {
                           onClick={() => handleDelete(service.id)}
                           className="bg-red-900 border-red-700 text-red-300 hover:bg-red-800"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Excluir
                         </Button>
                       </div>
                     </div>
@@ -235,9 +262,18 @@ const Services = () => {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            ) : (
+              <div className="text-center py-8">
+                <Scissors className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-slate-400">Nenhum serviço cadastrado ainda.</p>
+                <Button onClick={handleNewService} className="mt-4 bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Cadastrar Primeiro Serviço
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
