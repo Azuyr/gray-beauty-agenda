@@ -42,34 +42,40 @@ const Appointments = () => {
         notes: ""
       });
       
-      // Converter a data do formato dd/MM/yyyy para Date com validação
+      // Melhor tratamento para conversão de data
       if (editingAppointment.date) {
         try {
           console.log("Parsing date:", editingAppointment.date);
-          const parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
+          
+          // Tentar diferentes formatos de data
+          let parsedDate;
+          
+          if (editingAppointment.date.includes('/')) {
+            // Formato dd/MM/yyyy
+            parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
+          } else if (editingAppointment.date.includes('-')) {
+            // Formato yyyy-MM-dd
+            parsedDate = parse(editingAppointment.date, "yyyy-MM-dd", new Date());
+          } else {
+            // Tentar como Date diretamente
+            parsedDate = new Date(editingAppointment.date);
+          }
           
           if (isValid(parsedDate)) {
             setDate(parsedDate);
             console.log("Date parsed successfully:", parsedDate);
           } else {
             console.error("Parsed date is invalid:", parsedDate);
-            toast({
-              title: "Erro",
-              description: "Data do agendamento inválida.",
-              variant: "destructive"
-            });
+            // Definir data atual como fallback
+            setDate(new Date());
           }
         } catch (error) {
           console.error("Erro ao converter data:", error);
-          toast({
-            title: "Erro",
-            description: "Erro ao processar a data do agendamento.",
-            variant: "destructive"
-          });
+          setDate(new Date());
         }
       }
     }
-  }, [editingAppointment, toast]);
+  }, [editingAppointment]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

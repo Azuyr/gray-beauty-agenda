@@ -1,5 +1,5 @@
 
-import { Bell, Menu, Search, User, LogOut, Settings } from "lucide-react";
+import { Bell, Menu, Search, User, LogOut, Settings, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [notifications] = useState(3);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -71,11 +73,17 @@ const Navbar = () => {
             <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700 text-slate-100">
               <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-700" />
-              <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-700">
-                <User className="mr-2 h-4 w-4" />
-                Perfil
+              <DropdownMenuItem 
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer"
+                onClick={() => navigate('/user-management')}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Gerenciar Usuários
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-700">
+              <DropdownMenuItem 
+                className="text-slate-300 hover:text-white hover:bg-slate-700 cursor-pointer"
+                onClick={() => navigate('/settings')}
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 Configurações
               </DropdownMenuItem>
