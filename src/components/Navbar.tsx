@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SubscriptionPlans from "./SubscriptionPlans";
 import NotificationsPanel from "./NotificationsPanel";
@@ -21,7 +21,13 @@ const Navbar = () => {
   const [notifications] = useState(3);
   const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = localStorage.getItem('isAuthenticated');
+    setIsAuthenticated(auth === 'true');
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -35,7 +41,9 @@ const Navbar = () => {
       <nav className="bg-slate-800 border-b border-slate-700 px-4 py-3 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <SidebarTrigger className="text-slate-300 hover:text-white hover:bg-slate-700" />
+            {isAuthenticated && (
+              <SidebarTrigger className="text-slate-300 hover:text-white hover:bg-slate-700" />
+            )}
             
             <div className="flex items-center space-x-2">
               <div className="p-2 bg-blue-600 rounded-lg">
