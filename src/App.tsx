@@ -28,48 +28,26 @@ function AppContent() {
     setIsAuthenticated(auth === 'true');
   }, [location]);
 
-  // Don't show sidebar on login page (Index page when not authenticated)
-  const showSidebar = isAuthenticated;
-
-  if (showSidebar) {
-    return (
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full">
-          <AppSidebar />
-          <div className="flex-1">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/add-client" element={<AddClient />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/calendar" element={<CalendarView />} />
-              <Route path="/user-management" element={<UserManagement />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/settings" element={<Settings />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </div>
-      </SidebarProvider>
-    );
-  }
-
   return (
-    <div className="min-h-screen w-full">
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/add-client" element={<AddClient />} />
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/calendar" element={<CalendarView />} />
-        <Route path="/user-management" element={<UserManagement />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/settings" element={<Settings />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        {isAuthenticated && <AppSidebar />}
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/add-client" element={<AddClient />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/calendar" element={<CalendarView />} />
+            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/settings" element={<Settings />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }
 
