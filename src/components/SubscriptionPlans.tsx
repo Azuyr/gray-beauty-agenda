@@ -75,7 +75,7 @@ const SubscriptionPlans = ({ open, onOpenChange }: SubscriptionPlansProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl bg-slate-800 border-slate-700 text-slate-100">
+      <DialogContent className="max-w-4xl bg-slate-800 border-slate-700 text-slate-100 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center text-white">
             Escolha seu Plano
@@ -85,11 +85,11 @@ const SubscriptionPlans = ({ open, onOpenChange }: SubscriptionPlansProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 px-2 md:px-0">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-lg border p-6 ${
+              className={`relative rounded-lg border p-4 md:p-6 ${
                 plan.popular
                   ? "border-blue-500 bg-slate-700"
                   : "border-slate-600 bg-slate-750"
@@ -101,28 +101,28 @@ const SubscriptionPlans = ({ open, onOpenChange }: SubscriptionPlansProps) => {
                 </Badge>
               )}
 
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-white mb-2">
+              <div className="text-center mb-4 md:mb-6">
+                <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline justify-center">
-                  <span className="text-3xl font-bold text-blue-400">
+                  <span className="text-2xl md:text-3xl font-bold text-blue-400">
                     {plan.price}
                   </span>
                   <span className="text-slate-400 ml-1">{plan.period}</span>
                 </div>
               </div>
 
-              <ul className="space-y-3 mb-6">
+              <ul className="space-y-2 md:space-y-3 mb-4 md:mb-6">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center">
-                    <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
+                  <li key={feature} className="flex items-center text-sm md:text-base">
+                    <Check className="h-4 w-4 text-green-500 mr-2 md:mr-3 flex-shrink-0" />
                     <span className="text-slate-300">{feature}</span>
                   </li>
                 ))}
                 {plan.limitations.map((limitation) => (
-                  <li key={limitation} className="flex items-center">
-                    <X className="h-4 w-4 text-red-500 mr-3 flex-shrink-0" />
+                  <li key={limitation} className="flex items-center text-sm md:text-base">
+                    <X className="h-4 w-4 text-red-500 mr-2 md:mr-3 flex-shrink-0" />
                     <span className="text-slate-400">{limitation}</span>
                   </li>
                 ))}
@@ -130,7 +130,7 @@ const SubscriptionPlans = ({ open, onOpenChange }: SubscriptionPlansProps) => {
 
               <Button
                 onClick={() => handlePayment(plan.paymentLink)}
-                className={`w-full ${
+                className={`w-full text-sm md:text-base ${
                   plan.popular
                     ? "bg-blue-600 hover:bg-blue-700 text-white"
                     : "bg-slate-600 hover:bg-slate-500 text-blue-300"

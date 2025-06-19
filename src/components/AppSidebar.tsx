@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -61,6 +62,15 @@ const managementItems = [
 export function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleNavigation = (url: string) => {
+    navigate(url);
+    // Close mobile sidebar after navigation
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <Sidebar className="bg-slate-800 border-slate-700">
@@ -79,7 +89,7 @@ export function AppSidebar() {
                     className="text-slate-300 hover:text-white hover:bg-slate-700 data-[active=true]:bg-blue-600 data-[active=true]:text-white"
                   >
                     <button
-                      onClick={() => navigate(item.url)}
+                      onClick={() => handleNavigation(item.url)}
                       className="flex items-center gap-3 w-full"
                     >
                       <item.icon className="h-4 w-4" />
@@ -106,7 +116,7 @@ export function AppSidebar() {
                     className="text-slate-300 hover:text-white hover:bg-slate-700 data-[active=true]:bg-blue-600 data-[active=true]:text-white"
                   >
                     <button
-                      onClick={() => navigate(item.url)}
+                      onClick={() => handleNavigation(item.url)}
                       className="flex items-center gap-3 w-full"
                     >
                       <item.icon className="h-4 w-4" />
