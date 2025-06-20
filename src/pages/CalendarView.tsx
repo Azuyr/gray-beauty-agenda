@@ -1,9 +1,16 @@
+
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, User } from "lucide-react";
+import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, User, Edit } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Navbar from "@/components/Navbar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";

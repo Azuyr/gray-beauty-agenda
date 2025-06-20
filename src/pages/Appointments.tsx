@@ -10,14 +10,28 @@ import { format, parse, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useLocation, useNavigate } from "react-router-dom";
 
+interface Service {
+  value: string;
+  label: string;
+  price: number;
+}
+
+interface Product {
+  value: string;
+  label: string;
+  price: number;
+}
+
 const Appointments = () => {
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     clientName: "",
-    service: "",
-    product: "",
+    services: [] as Service[],
+    products: [] as Product[],
     time: "",
-    notes: ""
+    notes: "",
+    discountType: 'percentage' as 'percentage' | 'amount',
+    discountValue: 0
   });
   const { toast } = useToast();
   const location = useLocation();
@@ -29,12 +43,33 @@ const Appointments = () => {
     if (editingAppointment) {
       console.log("Editing appointment:", editingAppointment);
       
+      // Converter serviços e produtos antigos para nova estrutura
+      const services = [];
+      const products = [];
+      
+      if (editingAppointment.service) {
+        // Mapear serviços antigos
+        const serviceMap = {
+          "Corte + Escova": { value: "corte-escova", label: "Corte + Escova", price: 45 },
+          "Barba + Bigode": { value: "barba-bigode", label: "Barba + Bigode", price: 25 },
+          "Limpeza de Pele": { value: "limpeza-pele", label: "Limpeza de Pele", price: 80 },
+          "Corte Masculino": { value: "corte-masculino", label: "Corte Masculino", price: 30 },
+        };
+        
+        const mappedService = serviceMap[editingAppointment.service as keyof typeof serviceMap];
+        if (mappedService) {
+          services.push(mappedService);
+        }
+      }
+      
       setFormData({
         clientName: editingAppointment.clientName || "",
-        service: editingAppointment.service || "",
-        product: editingAppointment.product || "",
+        services: services,
+        products: products,
         time: editingAppointment.time || "",
-        notes: editingAppointment.notes || ""
+        notes: editingAppointment.notes || "",
+        discountType: 'percentage',
+        discountValue: 0
       });
       
       // Melhor tratamento para conversão de data
@@ -42,17 +77,13 @@ const Appointments = () => {
         try {
           console.log("Parsing date:", editingAppointment.date);
           
-          // Tentar diferentes formatos de data
           let parsedDate;
           
           if (editingAppointment.date.includes('/')) {
-            // Formato dd/MM/yyyy
             parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
           } else if (editingAppointment.date.includes('-')) {
-            // Formato yyyy-MM-dd
             parsedDate = parse(editingAppointment.date, "yyyy-MM-dd", new Date());
           } else {
-            // Tentar como Date diretamente
             parsedDate = new Date(editingAppointment.date);
           }
           
@@ -61,7 +92,6 @@ const Appointments = () => {
             console.log("Date parsed successfully:", parsedDate);
           } else {
             console.error("Parsed date is invalid:", parsedDate);
-            // Definir data atual como fallback
             setDate(new Date());
           }
         } catch (error) {
@@ -83,17 +113,40 @@ const Appointments = () => {
       return;
     }
     
+    if (formData.services.length === 0 && formData.products.length === 0) {
+      toast({
+        title: "Erro",
+        description: "Selecione pelo menos um serviço ou produto.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const action = editingAppointment ? "atualizado" : "criado";
+    const servicesText = formData.services.map(s => s.label).join(", ");
+    const productsText = formData.products.map(p => p.label).join(", ");
+    let description = `Agendamento para ${formData.clientName} em ${format(date, "dd/MM/yyyy", { locale: ptBR })} às ${formData.time}`;
+    
+    if (servicesText) description += `\nServiços: ${servicesText}`;
+    if (productsText) description += `\nProdutos: ${productsText}`;
+    
     toast({
       title: `Agendamento ${action} com sucesso!`,
-      description: `Agendamento para ${formData.clientName} em ${format(date, "dd/MM/yyyy", { locale: ptBR })} às ${formData.time}.`,
+      description: description,
     });
     
-    // Se for uma edição, navegar de volta; se for novo, limpar o formulário
     if (editingAppointment) {
-      navigate(-1); // Volta para a página anterior
+      navigate(-1);
     } else {
-      setFormData({ clientName: "", service: "", product: "", time: "", notes: "" });
+      setFormData({ 
+        clientName: "", 
+        services: [], 
+        products: [], 
+        time: "", 
+        notes: "",
+        discountType: 'percentage',
+        discountValue: 0
+      });
       setDate(undefined);
     }
   };
