@@ -15,6 +15,7 @@ const Appointments = () => {
   const [formData, setFormData] = useState({
     clientName: "",
     service: "",
+    product: "",
     time: "",
     notes: ""
   });
@@ -91,7 +92,7 @@ const Appointments = () => {
     if (editingAppointment) {
       navigate(-1); // Volta para a página anterior
     } else {
-      setFormData({ clientName: "", service: "", time: "", notes: "" });
+      setFormData({ clientName: "", service: "", product: "", time: "", notes: "" });
       setDate(undefined);
     }
   };

@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Save, Calendar as CalendarIcon } from "lucide-react";
-import ServiceProductCombobox from "@/components/ServiceProductCombobox";
+import ServiceCombobox from "@/components/ServiceCombobox";
+import ProductCombobox from "@/components/ProductCombobox";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -20,6 +21,7 @@ import ContactButtons from "./ContactButtons";
 interface FormData {
   clientName: string;
   service: string;
+  product: string;
   time: string;
   notes: string;
 }
@@ -55,6 +57,13 @@ const AppointmentForm = ({
     }));
   };
 
+  const handleProductChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      product: value
+    }));
+  };
+
   return (
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
@@ -77,14 +86,27 @@ const AppointmentForm = ({
             />
           </div>
           
-          <div>
-            <Label className="text-slate-300">Serviço/Produto</Label>
-            <div className="mt-1">
-              <ServiceProductCombobox
-                value={formData.service}
-                onChange={handleServiceChange}
-                placeholder="Selecionar serviço ou produto..."
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-slate-300">Serviço</Label>
+              <div className="mt-1">
+                <ServiceCombobox
+                  value={formData.service}
+                  onChange={handleServiceChange}
+                  placeholder="Selecionar serviço..."
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-slate-300">Produto</Label>
+              <div className="mt-1">
+                <ProductCombobox
+                  value={formData.product}
+                  onChange={handleProductChange}
+                  placeholder="Selecionar produto..."
+                />
+              </div>
             </div>
           </div>
 
