@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, User, Edit } from "lucide-react";
+import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, User, Edit, Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 
 const CalendarView = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   // Mock data para agendamentos
@@ -73,6 +75,20 @@ const CalendarView = () => {
       default:
         return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
     }
+  };
+
+  const handleViewDetails = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setIsDetailDialogOpen(true);
+  };
+
+  const handleEditAppointment = (appointment: any) => {
+    setIsDetailDialogOpen(false);
+    navigate('/appointments', { 
+      state: { 
+        editingAppointment: appointment 
+      }
+    });
   };
 
   const appointmentsForSelectedDate = getAppointmentsForDate(selectedDate);
@@ -170,9 +186,18 @@ const CalendarView = () => {
                         <User className="h-3 w-3 mr-1" />
                         {appointment.clientName}
                       </div>
-                      <p className="text-sm text-slate-400">
+                      <p className="text-sm text-slate-400 mb-3">
                         {appointment.service}
                       </p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleViewDetails(appointment)}
+                        className="w-full text-blue-400 border-blue-700 hover:bg-blue-900 bg-slate-700"
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        Ver Detalhes
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -191,7 +216,8 @@ const CalendarView = () => {
               {appointments.slice(0, 4).map((appointment) => (
                 <div 
                   key={appointment.id}
-                  className="p-4 border border-slate-600 rounded-lg bg-slate-700 hover:shadow-md transition-shadow"
+                  className="p-4 border border-slate-600 rounded-lg bg-slate-700 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => handleViewDetails(appointment)}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-medium text-white">
@@ -212,6 +238,55 @@ const CalendarView = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Dialog de detalhes do agendamento */}
+        <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+          <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-700">
+            <DialogHeader>
+              <DialogTitle className="flex items-center text-white">
+                <CalendarIcon className="h-5 w-5 mr-2" />
+                Detalhes do Agendamento
+              </DialogTitle>
+            </DialogHeader>
+            {selectedAppointment && (
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-white">Cliente:</span>
+                  <span className="text-slate-400">{selectedAppointment.clientName}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-white">Serviço:</span>
+                  <span className="text-slate-400">{selectedAppointment.service}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-white">Data:</span>
+                  <span className="text-slate-400">
+                    {format(selectedAppointment.date, "dd/MM/yyyy", { locale: ptBR })}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-white">Horário:</span>
+                  <span className="text-slate-400">{selectedAppointment.time}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-white">Status:</span>
+                  <Badge className={getStatusColor(selectedAppointment.status)}>
+                    {selectedAppointment.status}
+                  </Badge>
+                </div>
+                <div className="pt-4 border-t border-slate-700">
+                  <Button 
+                    onClick={() => handleEditAppointment(selectedAppointment)} 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Editar Agendamento
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
