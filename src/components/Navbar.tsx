@@ -16,12 +16,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SubscriptionPlans from "./SubscriptionPlans";
 import NotificationsPanel from "./NotificationsPanel";
+import SearchResults from "./SearchResults";
 
 const Navbar = () => {
   const [notifications] = useState(3);
   const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +37,17 @@ const Navbar = () => {
     localStorage.removeItem('trialStart');
     navigate('/');
     window.location.reload();
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setShowSearchResults(value.length > 2);
+  };
+
+  const handleSearchResultsClose = () => {
+    setShowSearchResults(false);
+    setSearchTerm("");
   };
 
   return (
@@ -53,78 +67,97 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4 flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
-                type="text"
-                placeholder="Buscar clientes, agendamentos..."
-                className="pl-10 bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:bg-slate-600"
+          {isAuthenticated && (
+            <div className="hidden md:flex items-center space-x-4 flex-1 max-w-md mx-8 relative">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  type="text"
+                  placeholder="Buscar clientes, agendamentos..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="pl-10 bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:bg-slate-600"
+                />
+              </div>
+              <SearchResults 
+                searchTerm={searchTerm}
+                isOpen={showSearchResults}
+                onClose={handleSearchResultsClose}
               />
             </div>
-          </div>
+          )}
 
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:border-blue-700"
-              onClick={() => setShowSubscriptionPlans(true)}
-            >
-              Assinar agora
-            </Button>
-
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="relative text-slate-300 hover:text-white hover:bg-slate-700"
-              onClick={() => setShowNotifications(true)}
-            >
-              <Bell className="h-5 w-5" />
-              {notifications > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
-                  {notifications}
-                </Badge>
-              )}
-            </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
-                  <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="hidden md:block">Usuário</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="w-56 bg-slate-800 border-slate-700 text-slate-100"
-              >
-                <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-slate-700" />
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-red-300"
+            {isAuthenticated && (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:border-blue-700"
+                  onClick={() => setShowSubscriptionPlans(true)}
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  Assinar agora
+                </Button>
+
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative text-slate-300 hover:text-white hover:bg-slate-700"
+                  onClick={() => setShowNotifications(true)}
+                >
+                  <Bell className="h-5 w-5" />
+                  {notifications > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
+                      {notifications}
+                    </Badge>
+                  )}
+                </Button>
+              </>
+            )}
+
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                    <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="hidden md:block">Usuário</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="end" 
+                  className="w-56 bg-slate-800 border-slate-700 text-slate-100"
+                >
+                  <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-slate-700" />
+                  <DropdownMenuItem 
+                    onClick={handleLogout} 
+                    className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-red-300"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </nav>
 
-      <SubscriptionPlans 
-        open={showSubscriptionPlans} 
-        onOpenChange={setShowSubscriptionPlans} 
-      />
-      
-      <NotificationsPanel 
-        open={showNotifications} 
-        onOpenChange={setShowNotifications} 
-      />
+      {isAuthenticated && (
+        <>
+          <SubscriptionPlans 
+            open={showSubscriptionPlans} 
+            onOpenChange={setShowSubscriptionPlans} 
+          />
+          
+          <NotificationsPanel 
+            open={showNotifications} 
+            onOpenChange={setShowNotifications} 
+          />
+        </>
+      )}
     </>
   );
 };

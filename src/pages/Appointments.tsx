@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { ArrowLeft, Save, Calendar as CalendarIcon, Clock, User, Mail, MessageCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import ServiceProductCombobox from "@/components/ServiceProductCombobox";
 import { useToast } from "@/hooks/use-toast";
 import { format, parse, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -110,6 +112,13 @@ const Appointments = () => {
     }));
   };
 
+  const handleServiceChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      service: value
+    }));
+  };
+
   const sendEmail = () => {
     const subject = encodeURIComponent("Confirmação de Agendamento - BeautyBook");
     const body = encodeURIComponent(`Olá ${formData.clientName},\n\nSeu agendamento foi confirmado:\n\nServiço: ${formData.service}\nData: ${date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : ""}\nHorário: ${formData.time}\n\nObrigado por escolher nossos serviços!`);
@@ -167,16 +176,14 @@ const Appointments = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="service" className="text-slate-300">Serviço</Label>
-                  <Input
-                    id="service"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleInputChange}
-                    placeholder="Ex: Corte + Escova"
-                    required
-                    className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
-                  />
+                  <Label className="text-slate-300">Serviço/Produto</Label>
+                  <div className="mt-1">
+                    <ServiceProductCombobox
+                      value={formData.service}
+                      onChange={handleServiceChange}
+                      placeholder="Selecionar serviço ou produto..."
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
