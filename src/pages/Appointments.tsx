@@ -32,8 +32,9 @@ const Appointments = () => {
       setFormData({
         clientName: editingAppointment.clientName || "",
         service: editingAppointment.service || "",
+        product: editingAppointment.product || "",
         time: editingAppointment.time || "",
-        notes: ""
+        notes: editingAppointment.notes || ""
       });
       
       // Melhor tratamento para conversão de data
