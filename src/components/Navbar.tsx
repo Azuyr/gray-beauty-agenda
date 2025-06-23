@@ -1,3 +1,4 @@
+
 import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,14 +6,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SubscriptionPlans from "./SubscriptionPlans";
 import NotificationsPanel from "./NotificationsPanel";
 import SearchResults from "./SearchResults";
@@ -25,11 +25,12 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const auth = localStorage.getItem('isAuthenticated');
     setIsAuthenticated(auth === 'true');
-  }, []);
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -55,7 +56,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {isAuthenticated && (
-              <SidebarTrigger className="text-slate-300 hover:text-white hover:bg-slate-700" />
+              <SidebarTrigger className="text-slate-300 hover:text-white hover:bg-slate-700 p-2 rounded" />
             )}
             
             <div className="flex items-center space-x-2">
@@ -111,33 +112,31 @@ const Navbar = () => {
                     </Badge>
                   )}
                 </Button>
-              </>
-            )}
 
-            {isAuthenticated && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
-                    <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="hidden md:block">Usuário</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="end" 
-                  className="w-56 bg-slate-800 border-slate-700 text-slate-100"
-                >
-                  <DropdownMenuSeparator className="bg-slate-700" />
-                  <DropdownMenuItem 
-                    onClick={handleLogout} 
-                    className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-red-300"
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700">
+                      <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="hidden md:block">Usuário</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent 
+                    align="end" 
+                    className="w-56 bg-slate-800 border-slate-700 text-slate-100"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuSeparator className="bg-slate-700" />
+                    <DropdownMenuItem 
+                      onClick={handleLogout} 
+                      className="text-red-400 hover:text-red-300 hover:bg-slate-700 cursor-pointer transition-colors focus:bg-slate-700 focus:text-red-300"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sair
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             )}
           </div>
         </div>
