@@ -1,15 +1,14 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Plus, Search, DollarSign, Calendar, User } from "lucide-react";
+import { ArrowLeft, Search, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AccountsList from "@/components/AccountsList";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import NewAccountDialog from "@/components/NewAccountDialog";
 
 interface Account {
   id: number;
@@ -34,7 +33,7 @@ const AccountsReceivable = () => {
   const [statusFilter, setStatusFilter] = useState<'todos' | 'pendente' | 'pago' | 'vencido'>('todos');
 
   // Mock data para contas a receber
-  const accounts: Account[] = [
+  const [accounts, setAccounts] = useState<Account[]>([
     {
       id: 1,
       title: "Agendamento - Maria Silva",
@@ -101,7 +100,7 @@ const AccountsReceivable = () => {
       appointmentId: 3,
       createdAt: new Date(new Date().setDate(new Date().getDate() - 2))
     }
-  ];
+  ]);
 
   const filteredAccounts = accounts.filter(account => {
     const matchesSearch = account.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -126,19 +125,33 @@ const AccountsReceivable = () => {
     sum + account.installments.filter(i => i.status === 'vencido').reduce((s, i) => s + i.amount, 0), 0
   );
 
-  const handleViewAccount = (accountId: number) => {
-    console.log(`Visualizando conta ${accountId}`);
-    // Implementar navegação para detalhes da conta
+  const handleCreateAccount = (newAccount: Account) => {
+    setAccounts(prev => [...prev, newAccount]);
+    console.log("Nova conta criada:", newAccount);
   };
 
-  const handleEditAccount = (accountId: number) => {
-    console.log(`Editando conta ${accountId}`);
-    // Implementar navegação para edição da conta
+  const handleUpdateAccount = (accountId: number, updatedData: Partial<Account>) => {
+    setAccounts(prev => prev.map(account => 
+      account.id === accountId ? { ...account, ...updatedData } : account
+    ));
+    console.log(`Conta ${accountId} atualizada:`, updatedData);
   };
 
-  const handleNewAccount = () => {
-    console.log("Criando nova conta");
-    // Implementar navegação para criação de nova conta
+  const handleMarkAsPaid = (accountId: number, installmentId: number) => {
+    setAccounts(prev => prev.map(account => {
+      if (account.id === accountId) {
+        return {
+          ...account,
+          installments: account.installments.map(installment => 
+            installment.id === installmentId 
+              ? { ...installment, status: 'pago' as const, paymentDate: new Date() }
+              : installment
+          )
+        };
+      }
+      return account;
+    }));
+    console.log(`Parcela ${installmentId} da conta ${accountId} marcada como paga`);
   };
 
   const getStatusColor = (status: string) => {
@@ -178,6 +191,7 @@ const AccountsReceivable = () => {
                 Gerencie as contas e parcelas dos seus clientes
               </p>
             </div>
+            <NewAccountDialog onCreateAccount={handleCreateAccount} />
           </div>
         </div>
 
@@ -266,9 +280,8 @@ const AccountsReceivable = () => {
         <AccountsList 
           accounts={filteredAccounts} 
           getStatusColor={getStatusColor}
-          onViewAccount={handleViewAccount}
-          onEditAccount={handleEditAccount}
-          onNewAccount={handleNewAccount}
+          onUpdateAccount={handleUpdateAccount}
+          onMarkAsPaid={handleMarkAsPaid}
         />
       </div>
     </div>
