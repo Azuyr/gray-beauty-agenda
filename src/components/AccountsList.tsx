@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit, DollarSign, Calendar, User } from "lucide-react";
+import { Eye, Edit, DollarSign, Calendar, User, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -26,16 +26,51 @@ interface Account {
 interface AccountsListProps {
   accounts: Account[];
   getStatusColor: (status: string) => string;
+  onViewAccount?: (accountId: number) => void;
+  onEditAccount?: (accountId: number) => void;
+  onNewAccount?: () => void;
 }
 
-const AccountsList = ({ accounts, getStatusColor }: AccountsListProps) => {
+const AccountsList = ({ accounts, getStatusColor, onViewAccount, onEditAccount, onNewAccount }: AccountsListProps) => {
   const handleMarkAsPaid = (accountId: number, installmentId: number) => {
     console.log(`Marcar parcela ${installmentId} da conta ${accountId} como paga`);
     // Implementar lógica para marcar como pago
   };
 
+  const handleViewAccount = (accountId: number) => {
+    console.log(`Ver detalhes da conta ${accountId}`);
+    if (onViewAccount) {
+      onViewAccount(accountId);
+    }
+  };
+
+  const handleEditAccount = (accountId: number) => {
+    console.log(`Editar conta ${accountId}`);
+    if (onEditAccount) {
+      onEditAccount(accountId);
+    }
+  };
+
+  const handleNewAccount = () => {
+    console.log("Criar nova conta");
+    if (onNewAccount) {
+      onNewAccount();
+    }
+  };
+
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-white">Lista de Contas</h3>
+        <Button 
+          onClick={handleNewAccount}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nova Conta
+        </Button>
+      </div>
+      
       {accounts.map((account) => (
         <Card key={account.id} className="bg-slate-800 border-slate-700">
           <CardHeader>
@@ -58,11 +93,21 @@ const AccountsList = ({ accounts, getStatusColor }: AccountsListProps) => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="bg-slate-700 border-slate-600 text-slate-300">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleViewAccount(account.id)}
+                  className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                >
                   <Eye className="h-3 w-3 mr-1" />
                   Ver
                 </Button>
-                <Button variant="outline" size="sm" className="bg-slate-700 border-slate-600 text-slate-300">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleEditAccount(account.id)}
+                  className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                >
                   <Edit className="h-3 w-3 mr-1" />
                   Editar
                 </Button>

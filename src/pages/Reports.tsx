@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { ArrowLeft, BarChart3, FileText, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import ReportsCharts from "@/components/ReportsCharts";
+import ExportOptions from "@/components/ExportOptions";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -53,9 +53,14 @@ const Reports = () => {
     returningClients: 61
   };
 
-  const handleExportReport = (type: string) => {
-    console.log(`Exportando relatório de ${type}`);
-    // Implementar lógica de exportação
+  const handleExportPDF = (type: string) => {
+    console.log(`Exportando relatório de ${type} como PDF`);
+    // Implementar lógica de exportação PDF
+  };
+
+  const handleExportExcel = (type: string) => {
+    console.log(`Exportando relatório de ${type} como Excel`);
+    // Implementar lógica de exportação Excel
   };
 
   return (
@@ -100,17 +105,29 @@ const Reports = () => {
         </div>
 
         <Tabs defaultValue="appointments" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800 border-slate-700">
-            <TabsTrigger value="appointments" className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1 bg-slate-800 border-slate-700 h-auto p-2">
+            <TabsTrigger 
+              value="appointments" 
+              className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs md:text-sm px-2 py-3 whitespace-normal text-center"
+            >
               Agendamentos
             </TabsTrigger>
-            <TabsTrigger value="services" className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger 
+              value="services" 
+              className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs md:text-sm px-2 py-3 whitespace-normal text-center"
+            >
               Serviços/Produtos
             </TabsTrigger>
-            <TabsTrigger value="accounts" className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger 
+              value="accounts" 
+              className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs md:text-sm px-2 py-3 whitespace-normal text-center"
+            >
               Contas a Receber
             </TabsTrigger>
-            <TabsTrigger value="users" className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger 
+              value="users" 
+              className="text-slate-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs md:text-sm px-2 py-3 whitespace-normal text-center"
+            >
               Clientes
             </TabsTrigger>
           </TabsList>
@@ -159,15 +176,10 @@ const Reports = () => {
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-white">Gráfico de Agendamentos</CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => handleExportReport('appointments')}
-                  className="bg-slate-700 border-slate-600 text-slate-300"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Exportar
-                </Button>
+                <ExportOptions
+                  onExportPDF={() => handleExportPDF('appointments')}
+                  onExportExcel={() => handleExportExcel('appointments')}
+                />
               </CardHeader>
               <CardContent>
                 <ReportsCharts data={appointmentsData} type="appointments" />
@@ -180,15 +192,10 @@ const Reports = () => {
               <Card className="bg-slate-800 border-slate-700">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-white">Serviços Mais Procurados</CardTitle>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleExportReport('services')}
-                    className="bg-slate-700 border-slate-600 text-slate-300"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Exportar
-                  </Button>
+                  <ExportOptions
+                    onExportPDF={() => handleExportPDF('services')}
+                    onExportExcel={() => handleExportExcel('services')}
+                  />
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -210,15 +217,10 @@ const Reports = () => {
               <Card className="bg-slate-800 border-slate-700">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-white">Produtos Mais Vendidos</CardTitle>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleExportReport('products')}
-                    className="bg-slate-700 border-slate-600 text-slate-300"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Exportar
-                  </Button>
+                  <ExportOptions
+                    onExportPDF={() => handleExportPDF('products')}
+                    onExportExcel={() => handleExportExcel('products')}
+                  />
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -287,15 +289,10 @@ const Reports = () => {
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-white">Fluxo de Caixa</CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => handleExportReport('accounts')}
-                  className="bg-slate-700 border-slate-600 text-slate-300"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Exportar
-                </Button>
+                <ExportOptions
+                  onExportPDF={() => handleExportPDF('accounts')}
+                  onExportExcel={() => handleExportExcel('accounts')}
+                />
               </CardHeader>
               <CardContent>
                 <ReportsCharts data={accountsData} type="accounts" />
@@ -345,15 +342,10 @@ const Reports = () => {
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-white">Análise de Clientes</CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => handleExportReport('users')}
-                  className="bg-slate-700 border-slate-600 text-slate-300"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Exportar
-                </Button>
+                <ExportOptions
+                  onExportPDF={() => handleExportPDF('users')}
+                  onExportExcel={() => handleExportExcel('users')}
+                />
               </CardHeader>
               <CardContent>
                 <ReportsCharts data={usersData} type="users" />

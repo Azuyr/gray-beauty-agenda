@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,6 +126,21 @@ const AccountsReceivable = () => {
     sum + account.installments.filter(i => i.status === 'vencido').reduce((s, i) => s + i.amount, 0), 0
   );
 
+  const handleViewAccount = (accountId: number) => {
+    console.log(`Visualizando conta ${accountId}`);
+    // Implementar navegação para detalhes da conta
+  };
+
+  const handleEditAccount = (accountId: number) => {
+    console.log(`Editando conta ${accountId}`);
+    // Implementar navegação para edição da conta
+  };
+
+  const handleNewAccount = () => {
+    console.log("Criando nova conta");
+    // Implementar navegação para criação de nova conta
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pago':
@@ -164,10 +178,6 @@ const AccountsReceivable = () => {
                 Gerencie as contas e parcelas dos seus clientes
               </p>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Nova Conta
-            </Button>
           </div>
         </div>
 
@@ -256,6 +266,9 @@ const AccountsReceivable = () => {
         <AccountsList 
           accounts={filteredAccounts} 
           getStatusColor={getStatusColor}
+          onViewAccount={handleViewAccount}
+          onEditAccount={handleEditAccount}
+          onNewAccount={handleNewAccount}
         />
       </div>
     </div>
