@@ -1,5 +1,5 @@
 
-import { Home, Users, Scissors, Package, Settings, Calendar, UserPlus } from "lucide-react";
+import { Home, Users, Scissors, Package, Settings, Calendar, UserPlus, DollarSign, BarChart3 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -33,6 +33,16 @@ const menuItems = [
     title: "Calendário",
     url: "/calendar",
     icon: Calendar,
+  },
+  {
+    title: "Contas a Receber",
+    url: "/accounts-receivable",
+    icon: DollarSign,
+  },
+  {
+    title: "Relatórios",
+    url: "/reports",
+    icon: BarChart3,
   },
 ];
 

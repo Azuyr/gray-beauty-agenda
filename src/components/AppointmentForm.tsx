@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -144,6 +143,42 @@ const AppointmentForm = ({
   
   const totalAmount = Math.max(0, subtotal - discountAmount);
 
+  const createAccountsReceivable = (totalAmount: number, installments: number = 1) => {
+    const installmentAmount = totalAmount / installments;
+    const accounts = [];
+    
+    for (let i = 0; i < installments; i++) {
+      accounts.push({
+        number: i + 1,
+        amount: installmentAmount,
+        dueDate: new Date(new Date().setMonth(new Date().getMonth() + i)),
+        status: 'pendente' as const
+      });
+    }
+    
+    return {
+      title: `Agendamento - ${formData.clientName}`,
+      clientName: formData.clientName,
+      totalAmount: totalAmount,
+      installments: accounts,
+      appointmentId: Date.now(), // Mock ID
+      createdAt: new Date()
+    };
+  };
+
+  const handleSubmitWithAccounts = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Criar conta a receber automaticamente quando salvar o agendamento
+    if (totalAmount > 0) {
+      const accountData = createAccountsReceivable(totalAmount, 1); // Por enquanto, sempre 1 parcela
+      console.log('Conta a receber criada:', accountData);
+      // Aqui você salvaria a conta no estado global ou banco de dados
+    }
+    
+    onSubmit(e);
+  };
+
   return (
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
@@ -153,7 +188,7 @@ const AppointmentForm = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmitWithAccounts} className="space-y-4">
           <div>
             <Label htmlFor="clientName" className="text-slate-300">Nome do Cliente</Label>
             <Input

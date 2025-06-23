@@ -14,6 +14,8 @@ import UserManagement from "./pages/UserManagement";
 import Settings from "./pages/Settings";
 import Services from "./pages/Services";
 import Products from "./pages/Products";
+import AccountsReceivable from "./pages/AccountsReceivable";
+import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
 
@@ -38,6 +40,8 @@ function AppContent() {
             <Route path="/add-client" element={<AddClient />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/calendar" element={<CalendarView />} />
+            <Route path="/accounts-receivable" element={<AccountsReceivable />} />
+            <Route path="/reports" element={<Reports />} />
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/services" element={<Services />} />
             <Route path="/products" element={<Products />} />
