@@ -1,4 +1,3 @@
-
 import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -129,7 +128,6 @@ const Navbar = () => {
                   align="end" 
                   className="w-56 bg-slate-800 border-slate-700 text-slate-100"
                 >
-                  <DropdownMenuLabel className="text-slate-100">Minha Conta</DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-slate-700" />
                   <DropdownMenuItem 
                     onClick={handleLogout} 

@@ -55,12 +55,10 @@ const Reports = () => {
 
   const handleExportPDF = (type: string) => {
     console.log(`Exportando relatório de ${type} como PDF`);
-    // Implementar lógica de exportação PDF
   };
 
   const handleExportExcel = (type: string) => {
     console.log(`Exportando relatório de ${type} como Excel`);
-    // Implementar lógica de exportação Excel
   };
 
   return (
@@ -179,6 +177,7 @@ const Reports = () => {
                 <ExportOptions
                   onExportPDF={() => handleExportPDF('appointments')}
                   onExportExcel={() => handleExportExcel('appointments')}
+                  reportType="Agendamentos"
                 />
               </CardHeader>
               <CardContent>
@@ -195,6 +194,7 @@ const Reports = () => {
                   <ExportOptions
                     onExportPDF={() => handleExportPDF('services')}
                     onExportExcel={() => handleExportExcel('services')}
+                    reportType="Serviços"
                   />
                 </CardHeader>
                 <CardContent>
@@ -220,6 +220,7 @@ const Reports = () => {
                   <ExportOptions
                     onExportPDF={() => handleExportPDF('products')}
                     onExportExcel={() => handleExportExcel('products')}
+                    reportType="Produtos"
                   />
                 </CardHeader>
                 <CardContent>
@@ -292,6 +293,7 @@ const Reports = () => {
                 <ExportOptions
                   onExportPDF={() => handleExportPDF('accounts')}
                   onExportExcel={() => handleExportExcel('accounts')}
+                  reportType="Contas a Receber"
                 />
               </CardHeader>
               <CardContent>
@@ -345,6 +347,7 @@ const Reports = () => {
                 <ExportOptions
                   onExportPDF={() => handleExportPDF('users')}
                   onExportExcel={() => handleExportExcel('users')}
+                  reportType="Clientes"
                 />
               </CardHeader>
               <CardContent>
