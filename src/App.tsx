@@ -4,9 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppSidebar } from "./components/AppSidebar";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import AddClient from "./pages/AddClient";
 import Appointments from "./pages/Appointments";
 import CalendarView from "./pages/CalendarView";
@@ -17,36 +20,69 @@ import Products from "./pages/Products";
 import AccountsReceivable from "./pages/AccountsReceivable";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
-import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const auth = localStorage.getItem('isAuthenticated');
-    setIsAuthenticated(auth === 'true');
-  }, [location]);
+  const { user } = useAuth();
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        {isAuthenticated && <AppSidebar />}
+        {user && <AppSidebar />}
         <div className="flex-1">
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/add-client" element={<AddClient />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/calendar" element={<CalendarView />} />
-            <Route path="/accounts-receivable" element={<AccountsReceivable />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/user-management" element={<UserManagement />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/settings" element={<Settings />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            <Route path="/add-client" element={
+              <ProtectedRoute>
+                <AddClient />
+              </ProtectedRoute>
+            } />
+            <Route path="/appointments" element={
+              <ProtectedRoute>
+                <Appointments />
+              </ProtectedRoute>
+            } />
+            <Route path="/calendar" element={
+              <ProtectedRoute>
+                <CalendarView />
+              </ProtectedRoute>
+            } />
+            <Route path="/accounts-receivable" element={
+              <ProtectedRoute>
+                <AccountsReceivable />
+              </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <Reports />
+              </ProtectedRoute>
+            } />
+            <Route path="/user-management" element={
+              <ProtectedRoute>
+                <UserManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/services" element={
+              <ProtectedRoute>
+                <Services />
+              </ProtectedRoute>
+            } />
+            <Route path="/products" element={
+              <ProtectedRoute>
+                <Products />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
@@ -61,7 +97,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppContent />
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

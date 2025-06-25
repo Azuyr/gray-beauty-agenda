@@ -11,32 +11,39 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import SubscriptionPlans from "./SubscriptionPlans";
 import NotificationsPanel from "./NotificationsPanel";
 import SearchResults from "./SearchResults";
+import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const [notifications] = useState(3);
   const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    const auth = localStorage.getItem('isAuthenticated');
-    setIsAuthenticated(auth === 'true');
-  }, [location]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('trialStart');
-    navigate('/');
-    window.location.reload();
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Erro ao sair",
+        description: "Ocorreu um erro ao fazer logout.",
+        variant: "destructive",
+      });
+    } else {
+      navigate("/auth");
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +62,7 @@ const Navbar = () => {
       <nav className="bg-slate-800 border-b border-slate-700 px-4 py-3 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            {isAuthenticated && (
+            {user && (
               <SidebarTrigger className="text-slate-300 hover:text-white hover:bg-slate-700 p-2 rounded" />
             )}
             
@@ -67,7 +74,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {isAuthenticated && (
+          {user && (
             <div className="hidden md:flex items-center space-x-4 flex-1 max-w-md mx-8 relative">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -88,7 +95,7 @@ const Navbar = () => {
           )}
 
           <div className="flex items-center space-x-4">
-            {isAuthenticated && (
+            {user && (
               <>
                 <Button 
                   variant="outline" 
@@ -119,7 +126,9 @@ const Navbar = () => {
                       <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
                         <User className="h-4 w-4 text-white" />
                       </div>
-                      <span className="hidden md:block">Usuário</span>
+                      <span className="hidden md:block">
+                        {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário'}
+                      </span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
@@ -142,7 +151,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {isAuthenticated && (
+      {user && (
         <>
           <SubscriptionPlans 
             open={showSubscriptionPlans} 
