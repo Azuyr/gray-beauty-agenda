@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, User } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useClients } from "@/hooks/useClients";
 
 const AddClient = () => {
   const [formData, setFormData] = useState({
@@ -16,17 +16,16 @@ const AddClient = () => {
     phone: "",
     notes: ""
   });
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { addClient } = useClients();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate saving client
-    toast({
-      title: "Cliente adicionado com sucesso!",
-      description: `${formData.name} foi cadastrado no sistema.`,
-    });
-    setFormData({ name: "", email: "", phone: "", notes: "" });
+    const success = await addClient(formData);
+    if (success) {
+      setFormData({ name: "", email: "", phone: "", notes: "" });
+      navigate('/'); // Redireciona para a tela principal após sucesso
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

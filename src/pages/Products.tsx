@@ -4,87 +4,58 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Package } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Package, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  brand: string;
-  price: string;
-  stock: string;
-}
+import { useProducts } from "@/hooks/useProducts";
 
 const Products = () => {
-  const [products, setProducts] = useState<Product[]>([
-    { id: 1, name: "Shampoo Anticaspa", description: "Shampoo para cabelos oleosos", brand: "Seda", price: "15.90", stock: "25" },
-    { id: 2, name: "Condicionador Hidratante", description: "Condicionador nutritivo", brand: "Pantene", price: "18.50", stock: "30" },
-  ]);
-  
+  const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    brand: "",
     price: "",
     stock: ""
   });
   
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const { toast } = useToast();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const productData = {
+      name: formData.name,
+      description: formData.description,
+      price: parseFloat(formData.price),
+      stock_quantity: parseInt(formData.stock)
+    };
+    
     if (editingId) {
-      setProducts(prev => prev.map(product => 
-        product.id === editingId 
-          ? { ...product, ...formData }
-          : product
-      ));
-      toast({
-        title: "Produto atualizado!",
-        description: `${formData.name} foi atualizado com sucesso.`,
-      });
+      await updateProduct(editingId, productData);
       setEditingId(null);
     } else {
-      const newProduct = {
-        id: Date.now(),
-        ...formData
-      };
-      setProducts(prev => [...prev, newProduct]);
-      toast({
-        title: "Produto cadastrado!",
-        description: `${formData.name} foi adicionado com sucesso.`,
-      });
+      await addProduct(productData);
     }
     
-    setFormData({ name: "", description: "", brand: "", price: "", stock: "" });
+    setFormData({ name: "", description: "", price: "", stock: "" });
     setShowForm(false);
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: any) => {
     setFormData({
       name: product.name,
-      description: product.description,
-      brand: product.brand,
-      price: product.price,
-      stock: product.stock
+      description: product.description || "",
+      price: product.price.toString(),
+      stock: product.stock_quantity.toString()
     });
     setEditingId(product.id);
     setShowForm(true);
   };
 
-  const handleDelete = (id: number) => {
-    setProducts(prev => prev.filter(product => product.id !== id));
-    toast({
-      title: "Produto removido!",
-      description: "O produto foi removido com sucesso.",
-    });
+  const handleDelete = async (id: string) => {
+    await deleteProduct(id);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +66,7 @@ const Products = () => {
   };
 
   const handleNewProduct = () => {
-    setFormData({ name: "", description: "", brand: "", price: "", stock: "" });
+    setFormData({ name: "", description: "", price: "", stock: "" });
     setEditingId(null);
     setShowForm(true);
   };
@@ -171,17 +142,6 @@ const Products = () => {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="brand" className="text-slate-300">Marca</Label>
-                  <Input
-                    id="brand"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleInputChange}
-                    className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
-                    placeholder="Ex: Seda, Pantene"
-                  />
-                </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -242,7 +202,12 @@ const Products = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {products.length > 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+                <span className="ml-2 text-slate-400">Carregando produtos...</span>
+              </div>
+            ) : products.length > 0 ? (
               <div className="space-y-4">
                 {products.map((product) => (
                   <div key={product.id} className="p-4 bg-slate-700 rounded-lg">
@@ -270,10 +235,9 @@ const Products = () => {
                       </div>
                     </div>
                     <p className="text-slate-400 text-sm mb-2">{product.description}</p>
-                    <p className="text-slate-300 text-sm mb-2">Marca: {product.brand}</p>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-300">Estoque: {product.stock} un</span>
-                      <span className="text-green-400 font-semibold">R$ {product.price}</span>
+                      <span className="text-slate-300">Estoque: {product.stock_quantity} un</span>
+                      <span className="text-green-400 font-semibold">R$ {product.price.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}

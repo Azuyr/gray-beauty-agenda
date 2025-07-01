@@ -4,25 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, Plus, Edit, Trash2, Scissors } from "lucide-react";
+import { ArrowLeft, Save, Plus, Edit, Trash2, Scissors, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-  duration: string;
-  price: string;
-}
+import { useServices } from "@/hooks/useServices";
 
 const Services = () => {
-  const [services, setServices] = useState<Service[]>([
-    { id: 1, name: "Corte Masculino", description: "Corte tradicional", duration: "30", price: "25.00" },
-    { id: 2, name: "Corte + Barba", description: "Corte completo com barba", duration: "45", price: "35.00" },
-  ]);
-  
+  const { services, loading, addService, updateService, deleteService } = useServices();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -31,57 +19,43 @@ const Services = () => {
     price: ""
   });
   
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const { toast } = useToast();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const serviceData = {
+      name: formData.name,
+      description: formData.description,
+      duration: parseInt(formData.duration),
+      price: parseFloat(formData.price)
+    };
+    
     if (editingId) {
-      setServices(prev => prev.map(service => 
-        service.id === editingId 
-          ? { ...service, ...formData }
-          : service
-      ));
-      toast({
-        title: "Serviço atualizado!",
-        description: `${formData.name} foi atualizado com sucesso.`,
-      });
+      await updateService(editingId, serviceData);
       setEditingId(null);
     } else {
-      const newService = {
-        id: Date.now(),
-        ...formData
-      };
-      setServices(prev => [...prev, newService]);
-      toast({
-        title: "Serviço cadastrado!",
-        description: `${formData.name} foi adicionado com sucesso.`,
-      });
+      await addService(serviceData);
     }
     
     setFormData({ name: "", description: "", duration: "", price: "" });
     setShowForm(false);
   };
 
-  const handleEdit = (service: Service) => {
+  const handleEdit = (service: any) => {
     setFormData({
       name: service.name,
-      description: service.description,
-      duration: service.duration,
-      price: service.price
+      description: service.description || "",
+      duration: service.duration.toString(),
+      price: service.price.toString()
     });
     setEditingId(service.id);
     setShowForm(true);
   };
 
-  const handleDelete = (id: number) => {
-    setServices(prev => prev.filter(service => service.id !== id));
-    toast({
-      title: "Serviço removido!",
-      description: "O serviço foi removido com sucesso.",
-    });
+  const handleDelete = async (id: string) => {
+    await deleteService(id);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,7 +201,12 @@ const Services = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {services.length > 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+                <span className="ml-2 text-slate-400">Carregando serviços...</span>
+              </div>
+            ) : services.length > 0 ? (
               <div className="space-y-4">
                 {services.map((service) => (
                   <div key={service.id} className="p-4 bg-slate-700 rounded-lg">
@@ -257,7 +236,7 @@ const Services = () => {
                     <p className="text-slate-400 text-sm mb-2">{service.description}</p>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-300">Duração: {service.duration} min</span>
-                      <span className="text-green-400 font-semibold">R$ {service.price}</span>
+                      <span className="text-green-400 font-semibold">R$ {service.price.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}
