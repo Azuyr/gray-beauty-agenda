@@ -8,40 +8,43 @@ import StatsCard from "@/components/StatsCard";
 import AppointmentCard from "@/components/AppointmentCard";
 import TrialBanner from "@/components/TrialBanner";
 import { useAuth } from "@/hooks/useAuth";
+import { useAppointments } from "@/hooks/useAppointments";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const Index = () => {
   const { user } = useAuth();
+  const { appointments } = useAppointments();
+  const { stats } = useDashboardStats();
   const trialDaysLeft = 5; // Mock trial days
 
-  const mockAppointments = [
-    {
-      id: 1,
-      clientName: "Maria Silva",
-      service: "Corte + Escova",
-      time: "09:00",
-      date: "Hoje",
-      status: "confirmado",
-      price: "R$ 85,00"
-    },
-    {
-      id: 2,
-      clientName: "João Santos",
-      service: "Barba + Bigode",
-      time: "10:30",
-      date: "Hoje",
-      status: "pendente",
-      price: "R$ 35,00"
-    },
-    {
-      id: 3,
-      clientName: "Ana Costa",
-      service: "Limpeza de Pele",
-      time: "14:00",
-      date: "Amanhã",
-      status: "confirmado",
-      price: "R$ 120,00"
-    }
-  ];
+  // Transform appointments to match AppointmentCard interface
+  const upcomingAppointments = appointments
+    .filter(appointment => {
+      const appointmentDate = new Date(appointment.appointment_date);
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      return appointmentDate >= today && appointmentDate <= tomorrow;
+    })
+    .slice(0, 3)
+    .map(appointment => ({
+      id: parseInt(appointment.id.slice(-6), 16), // Convert UUID to number for compatibility
+      clientName: appointment.clients?.name || 'Cliente',
+      service: appointment.services?.name || appointment.title,
+      time: format(new Date(appointment.appointment_date), 'HH:mm'),
+      date: format(new Date(appointment.appointment_date), 'dd/MM/yyyy') === format(new Date(), 'dd/MM/yyyy') 
+        ? 'Hoje' 
+        : format(new Date(appointment.appointment_date), 'dd/MM/yyyy') === format(new Date(Date.now() + 86400000), 'dd/MM/yyyy')
+        ? 'Amanhã'
+        : format(new Date(appointment.appointment_date), 'dd/MM/yyyy'),
+      status: appointment.status === 'confirmed' ? 'confirmado' : 
+             appointment.status === 'scheduled' ? 'pendente' :
+             appointment.status === 'completed' ? 'concluído' : 'cancelado',
+      price: appointment.total_amount ? `R$ ${appointment.total_amount.toFixed(2)}` : 'A definir'
+    }));
 
   if (!user) {
     return (
@@ -114,31 +117,23 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatsCard
             title="Agendamentos Hoje"
-            value="8"
+            value={stats.todayAppointments.toString()}
             icon={Calendar}
-            trend="+12%"
-            trendUp={true}
           />
           <StatsCard
             title="Clientes Ativos"
-            value="156"
+            value={stats.activeClients.toString()}
             icon={Users}
-            trend="+5%"
-            trendUp={true}
           />
           <StatsCard
             title="Receita do Mês"
-            value="R$ 12.340"
+            value={`R$ ${stats.monthlyRevenue.toFixed(2)}`}
             icon={TrendingUp}
-            trend="+18%"
-            trendUp={true}
           />
           <StatsCard
             title="Taxa de Ocupação"
-            value="87%"
+            value={`${stats.occupancyRate}%`}
             icon={Clock}
-            trend="+3%"
-            trendUp={true}
           />
         </div>
 
@@ -157,9 +152,15 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockAppointments.map((appointment) => (
-                  <AppointmentCard key={appointment.id} appointment={appointment} />
-                ))}
+                {upcomingAppointments.length > 0 ? (
+                  upcomingAppointments.map((appointment) => (
+                    <AppointmentCard key={appointment.id} appointment={appointment} />
+                  ))
+                ) : (
+                  <p className="text-slate-400 text-center py-4">
+                    Nenhum agendamento para hoje
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
