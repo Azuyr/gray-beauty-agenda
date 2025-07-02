@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { format, parse, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppointments } from "@/hooks/useAppointments";
+import { useClients } from "@/hooks/useClients";
 
 interface Service {
   value: string;
@@ -36,6 +38,8 @@ const Appointments = () => {
   const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
+  const { addAppointment, updateAppointment } = useAppointments();
+  const { clients } = useClients();
   const editingAppointment = location.state?.editingAppointment;
 
   // Preencher formulário se estiver editando
@@ -102,7 +106,7 @@ const Appointments = () => {
     }
   }, [editingAppointment]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date) {
       toast({
@@ -121,33 +125,53 @@ const Appointments = () => {
       });
       return;
     }
+
+    // Find client by name
+    const client = clients.find(c => c.name === formData.clientName);
+    if (!client) {
+      toast({
+        title: "Erro",
+        description: "Cliente não encontrado. Cadastre o cliente primeiro.",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    const action = editingAppointment ? "atualizado" : "criado";
-    const servicesText = formData.services.map(s => s.label).join(", ");
-    const productsText = formData.products.map(p => p.label).join(", ");
-    let description = `Agendamento para ${formData.clientName} em ${format(date, "dd/MM/yyyy", { locale: ptBR })} às ${formData.time}`;
+    const appointmentDate = new Date(date);
+    const [hours, minutes] = formData.time.split(':');
+    appointmentDate.setHours(parseInt(hours), parseInt(minutes));
     
-    if (servicesText) description += `\nServiços: ${servicesText}`;
-    if (productsText) description += `\nProdutos: ${productsText}`;
+    const totalAmount = formData.services.reduce((sum, s) => sum + s.price, 0) + 
+                       formData.products.reduce((sum, p) => sum + p.price, 0);
     
-    toast({
-      title: `Agendamento ${action} com sucesso!`,
-      description: description,
-    });
-    
+    const appointmentData = {
+      client_id: client.id,
+      title: formData.services.map(s => s.label).join(", ") || "Agendamento",
+      description: formData.notes,
+      appointment_date: appointmentDate.toISOString(),
+      duration: 60, // Default duration
+      status: 'scheduled' as const,
+      total_amount: totalAmount,
+      service_id: formData.services[0]?.value || null
+    };
+
     if (editingAppointment) {
+      await updateAppointment(editingAppointment.id, appointmentData);
       navigate(-1);
     } else {
-      setFormData({ 
-        clientName: "", 
-        services: [], 
-        products: [], 
-        time: "", 
-        notes: "",
-        discountType: 'percentage',
-        discountValue: 0
-      });
-      setDate(undefined);
+      const result = await addAppointment(appointmentData);
+      if (result) {
+        setFormData({ 
+          clientName: "", 
+          services: [], 
+          products: [], 
+          time: "", 
+          notes: "",
+          discountType: 'percentage',
+          discountValue: 0
+        });
+        setDate(undefined);
+      }
     }
   };
 

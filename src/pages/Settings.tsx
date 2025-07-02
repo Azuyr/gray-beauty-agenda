@@ -8,78 +8,36 @@ import { ArrowLeft, Save, Settings as SettingsIcon, Bell, Clock, Mail, Palette }
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useSettings } from "@/hooks/useSettings";
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    companyName: "BeautyBook",
-    companyEmail: "contato@beautybook.com",
-    companyPhone: "(11) 99999-9999",
-    companyAddress: "Rua das Flores, 123 - São Paulo, SP",
-    workingHours: {
-      start: "09:00",
-      end: "18:00",
-      lunch: "12:00-14:00"
-    },
-    notifications: {
-      email: true,
-      sms: false,
-      push: true
-    },
-    booking: {
-      advanceTime: "15",
-      cancelTime: "24",
-      autoConfirm: false
-    }
-  });
-
+  const { settings, loading, saveSettings, updateSettings, updateNestedSettings } = useSettings();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Configurações salvas com sucesso!",
-      description: "Todas as alterações foram aplicadas ao sistema.",
-    });
+    await saveSettings(settings);
   };
 
   const handleInputChange = (section: string, field: string, value: string | boolean) => {
-    setSettings(prev => {
-      if (section === 'workingHours') {
-        return {
-          ...prev,
-          workingHours: {
-            ...prev.workingHours,
-            [field]: value
-          }
-        };
-      } else if (section === 'notifications') {
-        return {
-          ...prev,
-          notifications: {
-            ...prev.notifications,
-            [field]: value
-          }
-        };
-      } else if (section === 'booking') {
-        return {
-          ...prev,
-          booking: {
-            ...prev.booking,
-            [field]: value
-          }
-        };
-      }
-      return prev;
-    });
+    updateNestedSettings(section as any, field, value);
   };
 
   const handleDirectChange = (field: string, value: string) => {
-    setSettings(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    updateSettings({ [field]: value });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900">
+        <Navbar />
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center text-white">Carregando configurações...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900">

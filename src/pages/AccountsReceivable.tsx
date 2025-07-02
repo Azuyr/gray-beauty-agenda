@@ -9,149 +9,50 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AccountsList from "@/components/AccountsList";
 import NewAccountDialog from "@/components/NewAccountDialog";
+import { useAccountsReceivable, type AccountReceivable } from "@/hooks/useAccountsReceivable";
 
-interface Account {
-  id: number;
-  title: string;
-  clientName: string;
-  totalAmount: number;
-  installments: {
-    id: number;
-    number: number;
-    amount: number;
-    dueDate: Date;
-    status: 'pendente' | 'pago' | 'vencido';
-    paymentDate?: Date;
-  }[];
-  appointmentId?: number;
-  createdAt: Date;
-}
+// Interface removida - usando AccountReceivable do hook
 
 const AccountsReceivable = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<'todos' | 'pendente' | 'pago' | 'vencido'>('todos');
-
-  // Mock data para contas a receber
-  const [accounts, setAccounts] = useState<Account[]>([
-    {
-      id: 1,
-      title: "Agendamento - Maria Silva",
-      clientName: "Maria Silva",
-      totalAmount: 120.00,
-      installments: [
-        {
-          id: 1,
-          number: 1,
-          amount: 60.00,
-          dueDate: new Date(),
-          status: 'pago',
-          paymentDate: new Date()
-        },
-        {
-          id: 2,
-          number: 2,
-          amount: 60.00,
-          dueDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-          status: 'pendente'
-        }
-      ],
-      appointmentId: 1,
-      createdAt: new Date()
-    },
-    {
-      id: 2,
-      title: "Agendamento - João Santos",
-      clientName: "João Santos",
-      totalAmount: 85.00,
-      installments: [
-        {
-          id: 3,
-          number: 1,
-          amount: 85.00,
-          dueDate: new Date(new Date().setDate(new Date().getDate() - 5)),
-          status: 'vencido'
-        }
-      ],
-      appointmentId: 2,
-      createdAt: new Date(new Date().setDate(new Date().getDate() - 10))
-    },
-    {
-      id: 3,
-      title: "Agendamento - Ana Costa",
-      clientName: "Ana Costa",
-      totalAmount: 200.00,
-      installments: [
-        {
-          id: 4,
-          number: 1,
-          amount: 100.00,
-          dueDate: new Date(new Date().setDate(new Date().getDate() + 5)),
-          status: 'pendente'
-        },
-        {
-          id: 5,
-          number: 2,
-          amount: 100.00,
-          dueDate: new Date(new Date().setDate(new Date().getDate() + 35)),
-          status: 'pendente'
-        }
-      ],
-      appointmentId: 3,
-      createdAt: new Date(new Date().setDate(new Date().getDate() - 2))
-    }
-  ]);
+  
+  const { accounts, loading, addAccount, updateAccount, markInstallmentAsPaid } = useAccountsReceivable();
 
   const filteredAccounts = accounts.filter(account => {
-    const matchesSearch = account.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = account.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          account.title.toLowerCase().includes(searchTerm.toLowerCase());
     
     if (statusFilter === 'todos') return matchesSearch;
     
-    const hasStatus = account.installments.some(installment => installment.status === statusFilter);
+    const hasStatus = account.installments?.some(installment => installment.status === statusFilter);
     return matchesSearch && hasStatus;
   });
 
   // Calcular totais
   const totalReceivable = accounts.reduce((sum, account) => 
-    sum + account.installments.filter(i => i.status !== 'pago').reduce((s, i) => s + i.amount, 0), 0
+    sum + (account.installments?.filter(i => i.status !== 'pago').reduce((s, i) => s + i.amount, 0) || 0), 0
   );
   
   const totalReceived = accounts.reduce((sum, account) => 
-    sum + account.installments.filter(i => i.status === 'pago').reduce((s, i) => s + i.amount, 0), 0
+    sum + (account.installments?.filter(i => i.status === 'pago').reduce((s, i) => s + i.amount, 0) || 0), 0
   );
   
   const totalOverdue = accounts.reduce((sum, account) => 
-    sum + account.installments.filter(i => i.status === 'vencido').reduce((s, i) => s + i.amount, 0), 0
+    sum + (account.installments?.filter(i => i.status === 'vencido').reduce((s, i) => s + i.amount, 0) || 0), 0
   );
 
-  const handleCreateAccount = (newAccount: Account) => {
-    setAccounts(prev => [...prev, newAccount]);
-    console.log("Nova conta criada:", newAccount);
+  const handleCreateAccount = async (newAccount: any) => {
+    await addAccount(newAccount);
   };
 
-  const handleUpdateAccount = (accountId: number, updatedData: Partial<Account>) => {
-    setAccounts(prev => prev.map(account => 
-      account.id === accountId ? { ...account, ...updatedData } : account
-    ));
-    console.log(`Conta ${accountId} atualizada:`, updatedData);
+  const handleUpdateAccount = async (accountId: string, updatedData: any) => {
+    await updateAccount(accountId, updatedData);
   };
 
-  const handleMarkAsPaid = (accountId: number, installmentId: number) => {
-    setAccounts(prev => prev.map(account => {
-      if (account.id === accountId) {
-        return {
-          ...account,
-          installments: account.installments.map(installment => 
-            installment.id === installmentId 
-              ? { ...installment, status: 'pago' as const, paymentDate: new Date() }
-              : installment
-          )
-        };
-      }
-      return account;
-    }));
-    console.log(`Parcela ${installmentId} da conta ${accountId} marcada como paga`);
+  const handleMarkAsPaid = async (accountId: string, installmentId: string) => {
+    await markInstallmentAsPaid(installmentId);
   };
 
   const getStatusColor = (status: string) => {
@@ -277,12 +178,65 @@ const AccountsReceivable = () => {
         </Card>
 
         {/* Lista de contas */}
-        <AccountsList 
-          accounts={filteredAccounts} 
-          getStatusColor={getStatusColor}
-          onUpdateAccount={handleUpdateAccount}
-          onMarkAsPaid={handleMarkAsPaid}
-        />
+        {loading ? (
+          <div className="text-center text-white">Carregando contas...</div>
+        ) : filteredAccounts.length > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Contas a Receber</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {filteredAccounts.map((account) => (
+                  <div key={account.id} className="p-4 border border-slate-700 rounded-lg">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-semibold text-white">{account.title}</h4>
+                        <p className="text-slate-400">{account.client_name}</p>
+                        <p className="text-green-400 font-medium">R$ {account.total_amount.toFixed(2)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-slate-400">
+                          {new Date(account.created_at).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                    </div>
+                    {account.installments && account.installments.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <h5 className="text-sm font-medium text-slate-300">Parcelas:</h5>
+                        {account.installments.map((installment) => (
+                          <div key={installment.id} className="flex justify-between items-center text-sm">
+                            <span className="text-slate-300">
+                              Parcela {installment.number} - R$ {installment.amount.toFixed(2)}
+                            </span>
+                            <div className="flex items-center space-x-2">
+                              <span className={`px-2 py-1 rounded text-xs ${getStatusColor(installment.status)}`}>
+                                {installment.status}
+                              </span>
+                              {installment.status === 'pendente' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleMarkAsPaid(account.id, installment.id)}
+                                >
+                                  Marcar como Pago
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="text-center text-slate-400 py-8">
+            Nenhuma conta encontrada
+          </div>
+        )}
       </div>
     </div>
   );

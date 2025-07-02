@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AddClient from "./pages/AddClient";
+import ClientManagement from "./pages/ClientManagement";
 import Appointments from "./pages/Appointments";
 import CalendarView from "./pages/CalendarView";
 import UserManagement from "./pages/UserManagement";
@@ -41,6 +42,11 @@ function AppContent() {
             <Route path="/add-client" element={
               <ProtectedRoute>
                 <AddClient />
+              </ProtectedRoute>
+            } />
+            <Route path="/client-management" element={
+              <ProtectedRoute>
+                <ClientManagement />
               </ProtectedRoute>
             } />
             <Route path="/appointments" element={

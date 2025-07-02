@@ -20,9 +20,9 @@ const menuItems = [
     icon: Home,
   },
   {
-    title: "Adicionar Cliente",
-    url: "/add-client",
-    icon: UserPlus,
+    title: "Gerenciar Clientes",
+    url: "/client-management",
+    icon: Users,
   },
   {
     title: "Agendamentos",

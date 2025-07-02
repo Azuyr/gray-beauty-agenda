@@ -177,10 +177,10 @@ const Index = () => {
                   Novo Agendamento
                 </Button>
               </Link>
-              <Link to="/add-client">
+              <Link to="/client-management">
                 <Button variant="outline" className="w-full">
                   <Users className="h-4 w-4 mr-2" />
-                  Adicionar Cliente
+                  Gerenciar Clientes
                 </Button>
               </Link>
               <Link to="/calendar">
