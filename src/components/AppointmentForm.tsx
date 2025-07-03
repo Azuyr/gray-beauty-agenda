@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Save, Calendar as CalendarIcon, X } from "lucide-react";
 import ServiceCombobox from "@/components/ServiceCombobox";
 import ProductCombobox from "@/components/ProductCombobox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -17,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import ContactButtons from "./ContactButtons";
 import { Badge } from "@/components/ui/badge";
+import { useClients } from "@/hooks/useClients";
 
 interface Service {
   value: string;
@@ -32,6 +34,7 @@ interface Product {
 
 interface FormData {
   clientName: string;
+  clientId: string;
   services: Service[];
   products: Product[];
   time: string;
@@ -57,6 +60,7 @@ const AppointmentForm = ({
   onSubmit, 
   isEditing 
 }: AppointmentFormProps) => {
+  const { clients } = useClients();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -190,15 +194,29 @@ const AppointmentForm = ({
       <CardContent>
         <form onSubmit={handleSubmitWithAccounts} className="space-y-4">
           <div>
-            <Label htmlFor="clientName" className="text-slate-300">Nome do Cliente</Label>
-            <Input
-              id="clientName"
-              name="clientName"
-              value={formData.clientName}
-              onChange={handleInputChange}
-              required
-              className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
-            />
+            <Label className="text-slate-300">Cliente</Label>
+            <Select 
+              value={formData.clientId} 
+              onValueChange={(value) => {
+                const selectedClient = clients.find(c => c.id === value);
+                setFormData(prev => ({
+                  ...prev,
+                  clientId: value,
+                  clientName: selectedClient?.name || ""
+                }));
+              }}
+            >
+              <SelectTrigger className="mt-1 bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Selecione um cliente" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-700 border-slate-600">
+                {clients.map((client) => (
+                  <SelectItem key={client.id} value={client.id} className="text-white">
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

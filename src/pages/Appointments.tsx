@@ -28,6 +28,7 @@ const Appointments = () => {
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     clientName: "",
+    clientId: "",
     services: [] as Service[],
     products: [] as Product[],
     time: "",
@@ -67,7 +68,8 @@ const Appointments = () => {
       }
       
       setFormData({
-        clientName: editingAppointment.clientName || "",
+        clientName: editingAppointment.clients?.name || "",
+        clientId: editingAppointment.client_id || "",
         services: services,
         products: products,
         time: editingAppointment.time || "",
@@ -126,12 +128,12 @@ const Appointments = () => {
       return;
     }
 
-    // Find client by name
-    const client = clients.find(c => c.name === formData.clientName);
+    // Find client by ID
+    const client = clients.find(c => c.id === formData.clientId);
     if (!client) {
       toast({
         title: "Erro",
-        description: "Cliente não encontrado. Cadastre o cliente primeiro.",
+        description: "Cliente não encontrado. Selecione um cliente.",
         variant: "destructive"
       });
       return;
@@ -162,7 +164,8 @@ const Appointments = () => {
       const result = await addAppointment(appointmentData);
       if (result) {
         setFormData({ 
-          clientName: "", 
+          clientName: "",
+          clientId: "", 
           services: [], 
           products: [], 
           time: "", 

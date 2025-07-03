@@ -4,42 +4,47 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
+import { useClients } from "@/hooks/useClients";
+import { useAccountsReceivable } from "@/hooks/useAccountsReceivable";
 
 interface NewAccountDialogProps {
-  onCreateAccount: (accountData: any) => void;
+  onCreateAccount?: (accountData: any) => void;
 }
 
 const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    clientName: "",
+    clientId: "",
     totalAmount: "",
     installments: 1
   });
+  const { clients } = useClients();
+  const { addAccount } = useAccountsReceivable();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newAccount = {
-      id: Date.now(),
+    const selectedClient = clients.find(c => c.id === formData.clientId);
+    if (!selectedClient) return;
+
+    const accountData = {
+      client_id: formData.clientId,
+      client_name: selectedClient.name,
       title: formData.title,
-      clientName: formData.clientName,
-      totalAmount: parseFloat(formData.totalAmount),
-      installments: Array.from({ length: formData.installments }, (_, index) => ({
-        id: Date.now() + index,
-        number: index + 1,
-        amount: parseFloat(formData.totalAmount) / formData.installments,
-        dueDate: new Date(new Date().setMonth(new Date().getMonth() + index)),
-        status: 'pendente' as const
-      })),
-      createdAt: new Date()
+      total_amount: parseFloat(formData.totalAmount),
     };
 
-    onCreateAccount(newAccount);
-    setOpen(false);
-    setFormData({ title: "", clientName: "", totalAmount: "", installments: 1 });
+    const result = await addAccount(accountData);
+    if (result) {
+      setOpen(false);
+      setFormData({ title: "", clientId: "", totalAmount: "", installments: 1 });
+      if (onCreateAccount) {
+        onCreateAccount(result);
+      }
+    }
   };
 
   return (
@@ -66,12 +71,18 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
           </div>
           <div>
             <Label className="text-slate-300">Cliente</Label>
-            <Input
-              value={formData.clientName}
-              onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-              className="bg-slate-700 border-slate-600 text-white"
-              required
-            />
+            <Select value={formData.clientId} onValueChange={(value) => setFormData({ ...formData, clientId: value })}>
+              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                <SelectValue placeholder="Selecione um cliente" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-700 border-slate-600">
+                {clients.map((client) => (
+                  <SelectItem key={client.id} value={client.id} className="text-white">
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label className="text-slate-300">Valor Total</Label>

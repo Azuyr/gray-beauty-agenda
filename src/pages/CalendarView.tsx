@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,51 +15,30 @@ import Navbar from "@/components/Navbar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { useAppointments } from "@/hooks/useAppointments";
 
 const CalendarView = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { appointments, loading } = useAppointments();
 
-  // Mock data para agendamentos
-  const appointments = [
-    {
-      id: 1,
-      date: new Date(),
-      time: "09:00",
-      clientName: "Maria Silva",
-      service: "Corte + Escova",
-      status: "confirmado"
-    },
-    {
-      id: 2,
-      date: new Date(),
-      time: "10:30",
-      clientName: "João Santos",
-      service: "Barba + Bigode",
-      status: "pendente"
-    },
-    {
-      id: 3,
-      date: new Date(new Date().setDate(new Date().getDate() + 1)),
-      time: "14:00",
-      clientName: "Ana Costa",
-      service: "Limpeza de Pele",
-      status: "confirmado"
-    },
-    {
-      id: 4,
-      date: new Date(new Date().setDate(new Date().getDate() + 2)),
-      time: "15:30",
-      clientName: "Pedro Oliveira",
-      service: "Corte Masculino",
-      status: "confirmado"
-    }
-  ];
+  // Converter appointments do banco para formato esperado
+  const formattedAppointments = appointments.map(apt => ({
+    id: apt.id,
+    date: new Date(apt.appointment_date),
+    time: format(new Date(apt.appointment_date), "HH:mm"),
+    clientName: apt.clients?.name || "Cliente não encontrado",
+    service: apt.title,
+    status: apt.status === 'scheduled' ? 'pendente' : 
+           apt.status === 'confirmed' ? 'confirmado' :
+           apt.status === 'completed' ? 'concluído' : 'cancelado',
+    originalAppointment: apt
+  }));
 
   const getAppointmentsForDate = (date: Date) => {
-    return appointments.filter(apt => 
+    return formattedAppointments.filter(apt => 
       format(apt.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
     );
   };
@@ -69,11 +48,13 @@ const CalendarView = () => {
       case 'confirmado':
         return 'bg-green-100 text-green-800 hover:bg-green-100';
       case 'pendente':
-        return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
+        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100';
+      case 'concluído':
+        return 'bg-blue-100 text-blue-800 hover:bg-blue-100';
       case 'cancelado':
         return 'bg-red-100 text-red-800 hover:bg-red-100';
       default:
-        return 'bg-brand-gray-100 text-brand-gray-800 hover:bg-brand-gray-100';
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-100';
     }
   };
 
@@ -86,15 +67,19 @@ const CalendarView = () => {
     setIsDetailDialogOpen(false);
     navigate('/appointments', { 
       state: { 
-        editingAppointment: appointment 
+        editingAppointment: appointment.originalAppointment 
       }
     });
+  };
+
+  const handleNewAppointment = () => {
+    navigate('/appointments');
   };
 
   const appointmentsForSelectedDate = getAppointmentsForDate(selectedDate);
 
   // Destacar datas com agendamentos
-  const datesWithAppointments = appointments.map(apt => apt.date);
+  const datesWithAppointments = formattedAppointments.map(apt => apt.date);
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -120,7 +105,7 @@ const CalendarView = () => {
                 Visualize e gerencie seus agendamentos
               </p>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleNewAppointment} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
               Novo Agendamento
             </Button>
@@ -213,7 +198,7 @@ const CalendarView = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {appointments.slice(0, 4).map((appointment) => (
+              {formattedAppointments.slice(0, 4).map((appointment) => (
                 <div 
                   key={appointment.id}
                   className="p-4 border border-slate-600 rounded-lg bg-slate-700 hover:shadow-md transition-shadow cursor-pointer"
