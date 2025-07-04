@@ -11,16 +11,55 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, resetPassword } = useAuth();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isResetPassword) {
+      if (!email) {
+        toast({
+          title: "Erro",
+          description: "Por favor, digite seu email.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const { error } = await resetPassword(email);
+        if (error) {
+          toast({
+            title: "Erro",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Email enviado!",
+            description: "Verifique sua caixa de entrada para redefinir sua senha.",
+          });
+          setIsResetPassword(false);
+        }
+      } catch (error) {
+        toast({
+          title: "Erro",
+          description: "Ocorreu um erro inesperado. Tente novamente.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
     
     if (!email || !password) {
       toast({
@@ -113,18 +152,21 @@ const Auth = () => {
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl">
-              {isLogin ? "Faça seu login" : "Criar conta"}
+              {isResetPassword ? "Recuperar senha" : (isLogin ? "Faça seu login" : "Criar conta")}
             </CardTitle>
             <p className="text-slate-400">
-              {isLogin 
-                ? "Entre em sua conta para continuar" 
-                : "Crie sua conta e comece seu teste grátis"
+              {isResetPassword 
+                ? "Digite seu email para receber as instruções" 
+                : (isLogin 
+                  ? "Entre em sua conta para continuar" 
+                  : "Crie sua conta e comece seu teste grátis"
+                )
               }
             </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleAuth} className="space-y-4">
-              {!isLogin && (
+              {!isLogin && !isResetPassword && (
                 <div className="space-y-2">
                   <Label htmlFor="fullName" className="text-white">Nome Completo</Label>
                   <Input
@@ -152,18 +194,20 @@ const Auth = () => {
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-white">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Sua senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  required
-                />
-              </div>
+              {!isResetPassword && (
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-white">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Sua senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                    required
+                  />
+                </div>
+              )}
 
               <Button 
                 type="submit"
@@ -171,21 +215,43 @@ const Auth = () => {
                 size="lg"
                 disabled={loading}
               >
-                {loading ? "Processando..." : (isLogin ? "Entrar" : "Criar conta")}
+                {loading ? "Processando..." : (isResetPassword ? "Enviar instruções" : (isLogin ? "Entrar" : "Criar conta"))}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                {isLogin 
-                  ? "Não tem uma conta? Cadastre-se" 
-                  : "Já tem uma conta? Faça login"
-                }
-              </button>
+            <div className="mt-6 text-center space-y-2">
+              {!isResetPassword && (
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-blue-400 hover:text-blue-300 transition-colors block w-full"
+                >
+                  {isLogin 
+                    ? "Não tem uma conta? Cadastre-se" 
+                    : "Já tem uma conta? Faça login"
+                  }
+                </button>
+              )}
+              
+              {isLogin && !isResetPassword && (
+                <button
+                  type="button"
+                  onClick={() => setIsResetPassword(true)}
+                  className="text-slate-400 hover:text-slate-300 transition-colors block w-full"
+                >
+                  Esqueceu sua senha?
+                </button>
+              )}
+              
+              {isResetPassword && (
+                <button
+                  type="button"
+                  onClick={() => setIsResetPassword(false)}
+                  className="text-blue-400 hover:text-blue-300 transition-colors block w-full"
+                >
+                  Voltar ao login
+                </button>
+              )}
             </div>
           </CardContent>
         </Card>

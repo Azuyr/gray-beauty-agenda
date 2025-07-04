@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useProducts } from "@/hooks/useProducts";
 
 interface Product {
   value: string;
@@ -31,18 +32,13 @@ interface ProductComboboxProps {
 
 const ProductCombobox = ({ value, onChange, placeholder = "Selecionar produto..." }: ProductComboboxProps) => {
   const [open, setOpen] = useState(false);
+  const { products: dbProducts } = useProducts();
 
-  const products: Product[] = [
-    { value: "shampoo-premium", label: "Shampoo Premium", price: 45 },
-    { value: "condicionador", label: "Condicionador", price: 35 },
-    { value: "mascara-hidratante", label: "Máscara Hidratante", price: 55 },
-    { value: "oleo-argan", label: "Óleo de Argan", price: 75 },
-    { value: "protetor-termico", label: "Protetor Térmico", price: 40 },
-    { value: "esmalte", label: "Esmalte", price: 15 },
-    { value: "base-unha", label: "Base para Unha", price: 12 },
-    { value: "creme-maos", label: "Creme para Mãos", price: 25 },
-    { value: "removedor", label: "Removedor de Esmalte", price: 18 },
-  ];
+  const products: Product[] = dbProducts.map(product => ({
+    value: product.id,
+    label: product.name,
+    price: product.price
+  }));
 
   const selectedProduct = products.find(product => product.value === value);
 
@@ -81,7 +77,10 @@ const ProductCombobox = ({ value, onChange, placeholder = "Selecionar produto...
                   key={product.value}
                   value={product.value}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? "" : currentValue);
+                    const selectedProduct = products.find(p => p.value === currentValue);
+                    if (selectedProduct) {
+                      onChange(JSON.stringify(selectedProduct));
+                    }
                     setOpen(false);
                   }}
                   className="text-slate-200 hover:bg-slate-700"

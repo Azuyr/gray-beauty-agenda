@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useServices } from "@/hooks/useServices";
 
 interface Service {
   value: string;
@@ -31,18 +32,13 @@ interface ServiceComboboxProps {
 
 const ServiceCombobox = ({ value, onChange, placeholder = "Selecionar serviço..." }: ServiceComboboxProps) => {
   const [open, setOpen] = useState(false);
+  const { services: dbServices } = useServices();
 
-  const services: Service[] = [
-    { value: "corte-escova", label: "Corte + Escova", price: 45 },
-    { value: "barba-bigode", label: "Barba + Bigode", price: 25 },
-    { value: "limpeza-pele", label: "Limpeza de Pele", price: 80 },
-    { value: "corte-masculino", label: "Corte Masculino", price: 30 },
-    { value: "coloracao", label: "Coloração", price: 120 },
-    { value: "hidratacao", label: "Hidratação", price: 60 },
-    { value: "sobrancelha", label: "Design de Sobrancelha", price: 35 },
-    { value: "manicure", label: "Manicure", price: 25 },
-    { value: "pedicure", label: "Pedicure", price: 30 },
-  ];
+  const services: Service[] = dbServices.map(service => ({
+    value: service.id,
+    label: service.name,
+    price: service.price
+  }));
 
   const selectedService = services.find(service => service.value === value);
 
@@ -81,7 +77,10 @@ const ServiceCombobox = ({ value, onChange, placeholder = "Selecionar serviço..
                   key={service.value}
                   value={service.value}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? "" : currentValue);
+                    const selectedService = services.find(s => s.value === currentValue);
+                    if (selectedService) {
+                      onChange(JSON.stringify(selectedService));
+                    }
                     setOpen(false);
                   }}
                   className="text-slate-200 hover:bg-slate-700"

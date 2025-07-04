@@ -69,20 +69,9 @@ const AppointmentForm = ({
   };
 
   const handleServiceAdd = (serviceValue: string) => {
-    const services = [
-      { value: "corte-escova", label: "Corte + Escova", price: 45 },
-      { value: "barba-bigode", label: "Barba + Bigode", price: 25 },
-      { value: "limpeza-pele", label: "Limpeza de Pele", price: 80 },
-      { value: "corte-masculino", label: "Corte Masculino", price: 30 },
-      { value: "coloracao", label: "Coloração", price: 120 },
-      { value: "hidratacao", label: "Hidratação", price: 60 },
-      { value: "sobrancelha", label: "Design de Sobrancelha", price: 35 },
-      { value: "manicure", label: "Manicure", price: 25 },
-      { value: "pedicure", label: "Pedicure", price: 30 },
-    ];
-    
-    const service = services.find(s => s.value === serviceValue);
-    if (service && !formData.services.find(s => s.value === serviceValue)) {
+    if (serviceValue && !formData.services.find(s => s.value === serviceValue)) {
+      // serviceValue já deve ser o objeto completo do ServiceCombobox
+      const service = JSON.parse(serviceValue);
       setFormData(prev => ({
         ...prev,
         services: [...prev.services, service]
@@ -91,20 +80,9 @@ const AppointmentForm = ({
   };
 
   const handleProductAdd = (productValue: string) => {
-    const products = [
-      { value: "shampoo-premium", label: "Shampoo Premium", price: 45 },
-      { value: "condicionador", label: "Condicionador", price: 35 },
-      { value: "mascara-hidratante", label: "Máscara Hidratante", price: 55 },
-      { value: "oleo-argan", label: "Óleo de Argan", price: 75 },
-      { value: "protetor-termico", label: "Protetor Térmico", price: 40 },
-      { value: "esmalte", label: "Esmalte", price: 15 },
-      { value: "base-unha", label: "Base para Unha", price: 12 },
-      { value: "creme-maos", label: "Creme para Mãos", price: 25 },
-      { value: "removedor", label: "Removedor de Esmalte", price: 18 },
-    ];
-    
-    const product = products.find(p => p.value === productValue);
-    if (product && !formData.products.find(p => p.value === productValue)) {
+    if (productValue && !formData.products.find(p => p.value === productValue)) {
+      // productValue já deve ser o objeto completo do ProductCombobox
+      const product = JSON.parse(productValue);
       setFormData(prev => ({
         ...prev,
         products: [...prev.products, product]
