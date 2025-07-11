@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import ContactButtons from "./ContactButtons";
 import { Badge } from "@/components/ui/badge";
 import { useClients } from "@/hooks/useClients";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Service {
   value: string;
@@ -61,6 +62,7 @@ const AppointmentForm = ({
   isEditing 
 }: AppointmentFormProps) => {
   const { clients } = useClients();
+  const [generateAccount, setGenerateAccount] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -151,14 +153,13 @@ const AppointmentForm = ({
   const handleSubmitWithAccounts = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Criar conta a receber automaticamente quando salvar o agendamento
-    if (totalAmount > 0) {
-      const accountData = createAccountsReceivable(totalAmount, 1); // Por enquanto, sempre 1 parcela
-      console.log('Conta a receber criada:', accountData);
-      // Aqui você salvaria a conta no estado global ou banco de dados
-    }
+    // Adicionar flag de geração de conta no evento
+    const event = {
+      ...e,
+      generateAccount
+    } as any;
     
-    onSubmit(e);
+    onSubmit(event);
   };
 
   return (
@@ -354,6 +355,19 @@ const AppointmentForm = ({
               className="mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400"
             />
           </div>
+
+          {!isEditing && (
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="generateAccount" 
+                checked={generateAccount}
+                onCheckedChange={(checked) => setGenerateAccount(!!checked)}
+              />
+              <Label htmlFor="generateAccount" className="text-slate-300">
+                Gerar conta a receber automaticamente
+              </Label>
+            </div>
+          )}
 
           <div className="flex flex-col space-y-2">
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">

@@ -108,7 +108,7 @@ const Appointments = () => {
     }
   }, [editingAppointment]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent & { generateAccount?: boolean }) => {
     e.preventDefault();
     if (!date) {
       toast({
@@ -161,7 +161,10 @@ const Appointments = () => {
       await updateAppointment(editingAppointment.id, appointmentData);
       navigate(-1);
     } else {
-      const result = await addAppointment(appointmentData);
+      const result = await addAppointment({
+        ...appointmentData,
+        generateAccount: e.generateAccount
+      });
       if (result) {
         setFormData({ 
           clientName: "",

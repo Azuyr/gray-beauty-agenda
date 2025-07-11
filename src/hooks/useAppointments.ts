@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from './use-toast';
+import { useAccountsReceivable } from './useAccountsReceivable';
 
 export interface Appointment {
   id: string;
@@ -30,6 +31,7 @@ export function useAppointments() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { addAccount } = useAccountsReceivable();
 
   const fetchAppointments = async () => {
     if (!user) return;
@@ -62,20 +64,35 @@ export function useAppointments() {
     fetchAppointments();
   }, [user]);
 
-  const addAppointment = async (appointmentData: Omit<Appointment, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addAppointment = async (appointmentData: Omit<Appointment, 'id' | 'user_id' | 'created_at' | 'updated_at'> & { generateAccount?: boolean }) => {
     if (!user) return null;
 
     try {
+      const { generateAccount, ...appointmentDataWithoutFlag } = appointmentData;
+      
       const { data, error } = await supabase
         .from('appointments')
         .insert([{
-          ...appointmentData,
+          ...appointmentDataWithoutFlag,
           user_id: user.id
         }])
-        .select()
+        .select(`
+          *,
+          clients(*)
+        `)
         .single();
 
       if (error) throw error;
+
+      // Gerar conta a receber se solicitado
+      if (generateAccount && data.total_amount && data.total_amount > 0) {
+        await addAccount({
+          client_id: data.client_id,
+          client_name: data.clients?.name || 'Cliente',
+          title: `Agendamento - ${data.title}`,
+          total_amount: data.total_amount
+        });
+      }
 
       await fetchAppointments(); // Refetch to get joined data
       toast({

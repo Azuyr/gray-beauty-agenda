@@ -63,20 +63,50 @@ export function useAccountsReceivable() {
     fetchAccounts();
   }, [user]);
 
-  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'installments'> & { installments?: number }) => {
     if (!user) return null;
 
     try {
+      const { installments, ...accountDataWithoutInstallments } = accountData;
+      
       const { data, error } = await supabase
         .from('accounts_receivable')
         .insert([{
-          ...accountData,
+          ...accountDataWithoutInstallments,
           user_id: user.id
         }])
         .select()
         .single();
 
       if (error) throw error;
+
+      // Se especificou mais de 1 parcela, criar parcelas adicionais
+      if (installments && installments > 1) {
+        const installmentAmount = accountData.total_amount / installments;
+        const installmentsToCreate = [];
+        
+        // Criar parcelas adicionais (a primeira já foi criada pelo trigger)
+        for (let i = 2; i <= installments; i++) {
+          installmentsToCreate.push({
+            account_id: data.id,
+            number: i,
+            amount: installmentAmount,
+            due_date: new Date(Date.now() + (30 * i * 24 * 60 * 60 * 1000)).toISOString().split('T')[0],
+            status: 'pendente'
+          });
+        }
+        
+        if (installmentsToCreate.length > 0) {
+          await supabase.from('installments').insert(installmentsToCreate);
+        }
+        
+        // Atualizar a primeira parcela com o valor correto
+        await supabase
+          .from('installments')
+          .update({ amount: installmentAmount })
+          .eq('account_id', data.id)
+          .eq('number', 1);
+      }
 
       await fetchAccounts(); // Refetch to get joined data
       toast({

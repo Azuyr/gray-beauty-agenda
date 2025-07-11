@@ -18,7 +18,8 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
   const [formData, setFormData] = useState({
     title: "",
     clientId: "",
-    totalAmount: ""
+    totalAmount: "",
+    installments: 1
   });
   const { clients } = useClients();
   const { addAccount } = useAccountsReceivable();
@@ -36,10 +37,13 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
       total_amount: parseFloat(formData.totalAmount),
     };
 
-    const result = await addAccount(accountData);
+    const result = await addAccount({
+      ...accountData,
+      installments: formData.installments
+    });
     if (result) {
       setOpen(false);
-      setFormData({ title: "", clientId: "", totalAmount: "" });
+      setFormData({ title: "", clientId: "", totalAmount: "", installments: 1 });
       if (onCreateAccount) {
         onCreateAccount(result);
       }
@@ -90,6 +94,17 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
               step="0.01"
               value={formData.totalAmount}
               onChange={(e) => setFormData({ ...formData, totalAmount: e.target.value })}
+              className="bg-slate-700 border-slate-600 text-white"
+              required
+            />
+          </div>
+          <div>
+            <Label className="text-slate-300">Número de Parcelas</Label>
+            <Input
+              type="number"
+              min="1"
+              value={formData.installments}
+              onChange={(e) => setFormData({ ...formData, installments: parseInt(e.target.value) || 1 })}
               className="bg-slate-700 border-slate-600 text-white"
               required
             />
