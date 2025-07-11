@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Search, DollarSign } from "lucide-react";
+import { ArrowLeft, Search, DollarSign, Eye, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AccountsList from "@/components/AccountsList";
@@ -44,7 +44,11 @@ const AccountsReceivable = () => {
   );
 
   const handleCreateAccount = async (newAccount: any) => {
-    await addAccount(newAccount);
+    const result = await addAccount(newAccount);
+    if (result) {
+      // Força atualização da lista após criar nova conta
+      window.location.reload();
+    }
   };
 
   const handleUpdateAccount = async (accountId: string, updatedData: any) => {
@@ -195,11 +199,29 @@ const AccountsReceivable = () => {
                         <p className="text-slate-400">{account.client_name}</p>
                         <p className="text-green-400 font-medium">R$ {account.total_amount.toFixed(2)}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-slate-400">
-                          {new Date(account.created_at).toLocaleDateString('pt-BR')}
-                        </p>
-                      </div>
+                       <div className="flex items-center gap-2">
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                         >
+                           <Eye className="h-3 w-3 mr-1" />
+                           Exibir
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                         >
+                           <Edit className="h-3 w-3 mr-1" />
+                           Editar
+                         </Button>
+                         <div className="text-right ml-4">
+                           <p className="text-sm text-slate-400">
+                             {new Date(account.created_at).toLocaleDateString('pt-BR')}
+                           </p>
+                         </div>
+                       </div>
                     </div>
                     {account.installments && account.installments.length > 0 && (
                       <div className="mt-3 space-y-2">

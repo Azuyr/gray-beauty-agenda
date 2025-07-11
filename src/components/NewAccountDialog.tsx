@@ -19,7 +19,9 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
     title: "",
     clientId: "",
     totalAmount: "",
-    installments: 1
+    installments: 1,
+    firstDueDate: "",
+    daysBetweenInstallments: 30
   });
   const { clients } = useClients();
   const { addAccount } = useAccountsReceivable();
@@ -39,11 +41,13 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
 
     const result = await addAccount({
       ...accountData,
-      installments: formData.installments
+      installments: formData.installments,
+      firstDueDate: formData.firstDueDate,
+      daysBetweenInstallments: formData.daysBetweenInstallments
     });
     if (result) {
       setOpen(false);
-      setFormData({ title: "", clientId: "", totalAmount: "", installments: 1 });
+      setFormData({ title: "", clientId: "", totalAmount: "", installments: 1, firstDueDate: "", daysBetweenInstallments: 30 });
       if (onCreateAccount) {
         onCreateAccount(result);
       }
@@ -105,6 +109,27 @@ const NewAccountDialog = ({ onCreateAccount }: NewAccountDialogProps) => {
               min="1"
               value={formData.installments}
               onChange={(e) => setFormData({ ...formData, installments: parseInt(e.target.value) || 1 })}
+              className="bg-slate-700 border-slate-600 text-white"
+              required
+            />
+          </div>
+          <div>
+            <Label className="text-slate-300">Data do Primeiro Vencimento</Label>
+            <Input
+              type="date"
+              value={formData.firstDueDate}
+              onChange={(e) => setFormData({ ...formData, firstDueDate: e.target.value })}
+              className="bg-slate-700 border-slate-600 text-white"
+              required
+            />
+          </div>
+          <div>
+            <Label className="text-slate-300">Intervalo entre Parcelas (dias)</Label>
+            <Input
+              type="number"
+              min="1"
+              value={formData.daysBetweenInstallments}
+              onChange={(e) => setFormData({ ...formData, daysBetweenInstallments: parseInt(e.target.value) || 30 })}
               className="bg-slate-700 border-slate-600 text-white"
               required
             />

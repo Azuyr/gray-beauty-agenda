@@ -63,11 +63,11 @@ export function useAccountsReceivable() {
     fetchAccounts();
   }, [user]);
 
-  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'installments'> & { installments?: number }) => {
+  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'installments'> & { installments?: number; firstDueDate?: string; daysBetweenInstallments?: number }) => {
     if (!user) return null;
 
     try {
-      const { installments, ...accountDataWithoutInstallments } = accountData;
+      const { installments, firstDueDate, daysBetweenInstallments, ...accountDataWithoutInstallments } = accountData;
       
       const { data, error } = await supabase
         .from('accounts_receivable')
@@ -84,14 +84,19 @@ export function useAccountsReceivable() {
       if (installments && installments > 1) {
         const installmentAmount = accountData.total_amount / installments;
         const installmentsToCreate = [];
+        const baseDate = firstDueDate ? new Date(firstDueDate) : new Date();
+        const intervalDays = daysBetweenInstallments || 30;
         
         // Criar parcelas adicionais (a primeira já foi criada pelo trigger)
         for (let i = 2; i <= installments; i++) {
+          const dueDate = new Date(baseDate);
+          dueDate.setDate(dueDate.getDate() + (intervalDays * (i - 1)));
+          
           installmentsToCreate.push({
             account_id: data.id,
             number: i,
             amount: installmentAmount,
-            due_date: new Date(Date.now() + (30 * i * 24 * 60 * 60 * 1000)).toISOString().split('T')[0],
+            due_date: dueDate.toISOString().split('T')[0],
             status: 'pendente'
           });
         }
@@ -100,10 +105,20 @@ export function useAccountsReceivable() {
           await supabase.from('installments').insert(installmentsToCreate);
         }
         
-        // Atualizar a primeira parcela com o valor correto
+        // Atualizar a primeira parcela com o valor correto e data de vencimento
         await supabase
           .from('installments')
-          .update({ amount: installmentAmount })
+          .update({ 
+            amount: installmentAmount,
+            due_date: firstDueDate || baseDate.toISOString().split('T')[0]
+          })
+          .eq('account_id', data.id)
+          .eq('number', 1);
+      } else if (firstDueDate) {
+        // Se só tem 1 parcela mas especificou data de vencimento
+        await supabase
+          .from('installments')
+          .update({ due_date: firstDueDate })
           .eq('account_id', data.id)
           .eq('number', 1);
       }
