@@ -117,21 +117,25 @@ const AccountsList = ({ accounts, getStatusColor, onUpdateAccount, onMarkAsPaid 
                   key={installment.id}
                   className="flex justify-between items-center p-3 bg-slate-700 rounded-lg"
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="text-white font-medium">
-                      {installment.number}ª parcela
-                    </span>
-                    <span className="text-slate-300">
-                      R$ {installment.amount.toFixed(2)}
-                    </span>
-                    <span className="text-slate-400 text-sm">
-                      Vencimento: {format(installment.dueDate, "dd/MM/yyyy", { locale: ptBR })}
-                    </span>
-                    {installment.paymentDate && (
-                      <span className="text-slate-400 text-sm">
-                        Pago em: {format(installment.paymentDate, "dd/MM/yyyy", { locale: ptBR })}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-4">
+                      <span className="text-white font-medium">
+                        {installment.number}ª parcela
                       </span>
-                    )}
+                      <span className="text-slate-300">
+                        R$ {installment.amount.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm">
+                      <span className="text-slate-400">
+                        Vencimento: {format(installment.dueDate, "dd/MM/yyyy", { locale: ptBR })}
+                      </span>
+                      {installment.paymentDate && (
+                        <span className="text-green-400">
+                          Pago em: {format(installment.paymentDate, "dd/MM/yyyy", { locale: ptBR })}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge className={getStatusColor(installment.status)}>

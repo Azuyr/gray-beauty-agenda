@@ -51,12 +51,19 @@ const AccountsReceivable = () => {
     }
   };
 
-  const handleUpdateAccount = async (accountId: string, updatedData: any) => {
-    await updateAccount(accountId, updatedData);
+  const handleUpdateAccount = async (accountId: number, updatedData: any) => {
+    const accountStringId = filteredAccounts.find(acc => parseInt(acc.id) === accountId)?.id;
+    if (accountStringId) {
+      await updateAccount(accountStringId, updatedData);
+    }
   };
 
-  const handleMarkAsPaid = async (accountId: string, installmentId: string) => {
-    await markInstallmentAsPaid(installmentId);
+  const handleMarkAsPaid = async (accountId: number, installmentId: number) => {
+    const account = filteredAccounts.find(acc => parseInt(acc.id) === accountId);
+    const installment = account?.installments?.find(inst => parseInt(inst.id) === installmentId);
+    if (installment) {
+      await markInstallmentAsPaid(installment.id);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -185,75 +192,26 @@ const AccountsReceivable = () => {
         {loading ? (
           <div className="text-center text-white">Carregando contas...</div>
         ) : filteredAccounts.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Contas a Receber</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {filteredAccounts.map((account) => (
-                  <div key={account.id} className="p-4 border border-slate-700 rounded-lg">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-semibold text-white">{account.title}</h4>
-                        <p className="text-slate-400">{account.client_name}</p>
-                        <p className="text-green-400 font-medium">R$ {account.total_amount.toFixed(2)}</p>
-                      </div>
-                       <div className="flex items-center gap-2">
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
-                         >
-                           <Eye className="h-3 w-3 mr-1" />
-                           Exibir
-                         </Button>
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
-                         >
-                           <Edit className="h-3 w-3 mr-1" />
-                           Editar
-                         </Button>
-                         <div className="text-right ml-4">
-                           <p className="text-sm text-slate-400">
-                             {new Date(account.created_at).toLocaleDateString('pt-BR')}
-                           </p>
-                         </div>
-                       </div>
-                    </div>
-                    {account.installments && account.installments.length > 0 && (
-                      <div className="mt-3 space-y-2">
-                        <h5 className="text-sm font-medium text-slate-300">Parcelas:</h5>
-                        {account.installments.map((installment) => (
-                          <div key={installment.id} className="flex justify-between items-center text-sm">
-                            <span className="text-slate-300">
-                              Parcela {installment.number} - R$ {installment.amount.toFixed(2)}
-                            </span>
-                            <div className="flex items-center space-x-2">
-                              <span className={`px-2 py-1 rounded text-xs ${getStatusColor(installment.status)}`}>
-                                {installment.status}
-                              </span>
-                              {installment.status === 'pendente' && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleMarkAsPaid(account.id, installment.id)}
-                                >
-                                  Marcar como Pago
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <AccountsList
+            accounts={filteredAccounts.map(account => ({
+              id: parseInt(account.id),
+              title: account.title,
+              clientName: account.client_name,
+              totalAmount: account.total_amount,
+              createdAt: new Date(account.created_at),
+              installments: account.installments?.map(installment => ({
+                id: parseInt(installment.id),
+                number: installment.number,
+                amount: installment.amount,
+                dueDate: new Date(installment.due_date),
+                status: installment.status as 'pendente' | 'pago' | 'vencido',
+                paymentDate: installment.payment_date ? new Date(installment.payment_date) : undefined
+              })) || []
+            }))}
+            getStatusColor={getStatusColor}
+            onUpdateAccount={handleUpdateAccount}
+            onMarkAsPaid={handleMarkAsPaid}
+          />
         ) : (
           <div className="text-center text-slate-400 py-8">
             Nenhuma conta encontrada
