@@ -49,7 +49,7 @@ interface AppointmentFormProps {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   date: Date | undefined;
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent & { generateAccount?: boolean; totalAmount?: number }) => void;
   isEditing: boolean;
 }
 
@@ -127,28 +127,6 @@ const AppointmentForm = ({
   
   const totalAmount = Math.max(0, subtotal - discountAmount);
 
-  const createAccountsReceivable = (totalAmount: number, installments: number = 1) => {
-    const installmentAmount = totalAmount / installments;
-    const accounts = [];
-    
-    for (let i = 0; i < installments; i++) {
-      accounts.push({
-        number: i + 1,
-        amount: installmentAmount,
-        dueDate: new Date(new Date().setMonth(new Date().getMonth() + i)),
-        status: 'pendente' as const
-      });
-    }
-    
-    return {
-      title: `Agendamento - ${formData.clientName}`,
-      clientName: formData.clientName,
-      totalAmount: totalAmount,
-      installments: accounts,
-      appointmentId: Date.now(), // Mock ID
-      createdAt: new Date()
-    };
-  };
 
   const handleSubmitWithAccounts = (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,7 +134,8 @@ const AppointmentForm = ({
     // Adicionar flag de geração de conta no evento
     const event = {
       ...e,
-      generateAccount
+      generateAccount,
+      totalAmount
     } as any;
     
     onSubmit(event);

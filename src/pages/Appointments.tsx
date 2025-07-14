@@ -108,7 +108,7 @@ const Appointments = () => {
     }
   }, [editingAppointment]);
 
-  const handleSubmit = async (e: React.FormEvent & { generateAccount?: boolean }) => {
+  const handleSubmit = async (e: React.FormEvent & { generateAccount?: boolean; totalAmount?: number }) => {
     e.preventDefault();
     if (!date) {
       toast({
@@ -143,8 +143,8 @@ const Appointments = () => {
     const [hours, minutes] = formData.time.split(':');
     appointmentDate.setHours(parseInt(hours), parseInt(minutes));
     
-    const totalAmount = formData.services.reduce((sum, s) => sum + s.price, 0) + 
-                       formData.products.reduce((sum, p) => sum + p.price, 0);
+    // Use o totalAmount calculado no AppointmentForm ou calcule novamente
+    const totalAmount = e.totalAmount || (formData.services.reduce((sum, s) => sum + s.price, 0) + formData.products.reduce((sum, p) => sum + p.price, 0));
     
     const appointmentData = {
       client_id: client.id,

@@ -90,14 +90,18 @@ export function useAppointments() {
           client_id: data.client_id,
           client_name: data.clients?.name || 'Cliente',
           title: `Agendamento - ${data.title}`,
-          total_amount: data.total_amount
+          total_amount: data.total_amount,
+          installments: 1,
+          firstDueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 dias
+          daysBetweenInstallments: 30,
+          showToast: false
         });
       }
 
       await fetchAppointments(); // Refetch to get joined data
       toast({
         title: "Agendamento criado!",
-        description: `Agendamento para ${appointmentData.title} foi criado com sucesso.`,
+        description: `Agendamento para ${appointmentData.title} foi criado com sucesso.${generateAccount ? ' Conta a receber gerada automaticamente.' : ''}`,
       });
       
       return data;

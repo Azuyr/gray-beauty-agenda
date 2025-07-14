@@ -63,11 +63,11 @@ export function useAccountsReceivable() {
     fetchAccounts();
   }, [user]);
 
-  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'installments'> & { installments?: number; firstDueDate?: string; daysBetweenInstallments?: number }) => {
+  const addAccount = async (accountData: Omit<AccountReceivable, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'installments'> & { installments?: number; firstDueDate?: string; daysBetweenInstallments?: number; showToast?: boolean }) => {
     if (!user) return null;
 
     try {
-      const { installments, firstDueDate, daysBetweenInstallments, ...accountDataWithoutInstallments } = accountData;
+      const { installments, firstDueDate, daysBetweenInstallments, showToast = true, ...accountDataWithoutInstallments } = accountData;
       
       const { data, error } = await supabase
         .from('accounts_receivable')
@@ -124,10 +124,13 @@ export function useAccountsReceivable() {
       }
 
       await fetchAccounts(); // Refetch to get joined data
-      toast({
-        title: "Conta criada!",
-        description: `Conta para ${accountData.client_name} foi criada com sucesso.`,
-      });
+      
+      if (showToast) {
+        toast({
+          title: "Conta criada!",
+          description: `Conta para ${accountData.client_name} foi criada com sucesso.`,
+        });
+      }
       
       return data;
     } catch (error: any) {
