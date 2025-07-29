@@ -131,14 +131,13 @@ const AppointmentForm = ({
   const handleSubmitWithAccounts = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Adicionar flag de geração de conta no evento
-    const event = {
-      ...e,
+    // Criar um evento customizado com as propriedades necessárias
+    const customEvent = Object.assign(e, {
       generateAccount,
       totalAmount
-    } as any;
+    });
     
-    onSubmit(event);
+    onSubmit(customEvent);
   };
 
   return (
