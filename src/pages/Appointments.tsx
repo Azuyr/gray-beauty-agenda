@@ -72,26 +72,18 @@ const Appointments = () => {
         clientId: editingAppointment.client_id || "",
         services: services,
         products: products,
-        time: editingAppointment.time || "",
-        notes: editingAppointment.notes || "",
+        time: format(new Date(editingAppointment.appointment_date), "HH:mm"),
+        notes: editingAppointment.description || "",
         discountType: 'percentage',
         discountValue: 0
       });
       
-      // Melhor tratamento para conversão de data
-      if (editingAppointment.date) {
+      // Usar appointment_date do banco de dados
+      if (editingAppointment.appointment_date) {
         try {
-          console.log("Parsing date:", editingAppointment.date);
+          console.log("Parsing appointment_date:", editingAppointment.appointment_date);
           
-          let parsedDate;
-          
-          if (editingAppointment.date.includes('/')) {
-            parsedDate = parse(editingAppointment.date, "dd/MM/yyyy", new Date());
-          } else if (editingAppointment.date.includes('-')) {
-            parsedDate = parse(editingAppointment.date, "yyyy-MM-dd", new Date());
-          } else {
-            parsedDate = new Date(editingAppointment.date);
-          }
+          const parsedDate = new Date(editingAppointment.appointment_date);
           
           if (isValid(parsedDate)) {
             setDate(parsedDate);

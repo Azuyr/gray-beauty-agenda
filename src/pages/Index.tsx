@@ -19,7 +19,7 @@ const Index = () => {
   const { stats } = useDashboardStats();
   const trialDaysLeft = 5; // Mock trial days
 
-  // Transform appointments to match AppointmentCard interface
+  // Filter upcoming appointments
   const upcomingAppointments = appointments
     .filter(appointment => {
       const appointmentDate = new Date(appointment.appointment_date);
@@ -29,22 +29,7 @@ const Index = () => {
       
       return appointmentDate >= today && appointmentDate <= tomorrow;
     })
-    .slice(0, 3)
-    .map(appointment => ({
-      id: parseInt(appointment.id.slice(-6), 16), // Convert UUID to number for compatibility
-      clientName: appointment.clients?.name || 'Cliente',
-      service: appointment.services?.name || appointment.title,
-      time: format(new Date(appointment.appointment_date), 'HH:mm'),
-      date: format(new Date(appointment.appointment_date), 'dd/MM/yyyy') === format(new Date(), 'dd/MM/yyyy') 
-        ? 'Hoje' 
-        : format(new Date(appointment.appointment_date), 'dd/MM/yyyy') === format(new Date(Date.now() + 86400000), 'dd/MM/yyyy')
-        ? 'Amanhã'
-        : format(new Date(appointment.appointment_date), 'dd/MM/yyyy'),
-      status: appointment.status === 'confirmed' ? 'confirmado' : 
-             appointment.status === 'scheduled' ? 'pendente' :
-             appointment.status === 'completed' ? 'concluído' : 'cancelado',
-      price: appointment.total_amount ? `R$ ${appointment.total_amount.toFixed(2)}` : 'A definir'
-    }));
+    .slice(0, 3);
 
   if (!user) {
     return (
